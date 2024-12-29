@@ -1,3 +1,149 @@
+import React, { useState, useEffect, useMemo } from "react";
+import "./MainComponent.css";
+
+function MainComponent() {
+  const [activePlayer, setActivePlayer] = useState(null);
+  const [player1Time, setPlayer1Time] = useState(20 * 60);
+  const [player2Time, setPlayer2Time] = useState(20 * 60);
+  const [upkeepTime, setUpkeepTime] = useState(30);
+  const [isUpkeepActive, setIsUpkeepActive] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [player1Name, setPlayer1Name] = useState("Player 1");
+  const [player2Name, setPlayer2Name] = useState("Player 2");
+
+  // Sounds
+  const winSound = useMemo(() => new Audio("./sounds/victory.mp3"), []);
+  const battleSound = useMemo(() => new Audio("./sounds/battle.mp3"), []);
+  const lowHealthSound = useMemo(() => new Audio("./sounds/low-health.mp3"), []);
+  const plinkSound = useMemo(() => new Audio("./sounds/plink.mp3"), []);
+
+  // Play sound helper
+  const playSound = (sound) => {
+    if (audioEnabled) {
+      sound.pause();
+      sound.currentTime = 0;
+      sound.play().catch((err) => console.error("Sound playback failed:", err));
+    }
+  };
+
+  // Timers
+  useEffect(() => {
+    let interval;
+    if (gameStarted && activePlayer) {
+      interval = setInterval(() => {
+        if (activePlayer === 1) {
+          setPlayer1Time((prev) => {
+            if (prev <= 0) {
+              endGame();
+              return 0;
+            }
+            return prev - 1;
+          });
+        } else {
+          setPlayer2Time((prev) => {
+            if (prev <= 0) {
+              endGame();
+              return 0;
+            }
+            return prev - 1;
+          });
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [activePlayer, gameStarted]);
+
+  useEffect(() => {
+    let upkeepInterval;
+    if (isUpkeepActive) {
+      upkeepInterval = setInterval(() => {
+        setUpkeepTime((prev) => {
+          if (prev <= 10) {
+            playSound(lowHealthSound);
+          }
+          if (prev <= 0) {
+            setIsUpkeepActive(false);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(upkeepInterval);
+  }, [isUpkeepActive]);
+
+  // Game actions
+  const startGame = (player) => {
+    setGameStarted(true);
+    setActivePlayer(player);
+    playSound(battleSound);
+  };
+
+  const passTurn = () => {
+    playSound(plinkSound);
+    setActivePlayer(activePlayer === 1 ? 2 : 1);
+    setIsUpkeepActive(false);
+  };
+
+  const resetAll = () => {
+    playSound(plinkSound);
+    setGameStarted(false);
+    setActivePlayer(null);
+    setPlayer1Time(20 * 60);
+    setPlayer2Time(20 * 60);
+    setUpkeepTime(30);
+    setIsUpkeepActive(false);
+  };
+
+  const endGame = () => {
+    setGameStarted(false);
+    playSound(winSound);
+  };
+
+  const toggleAudio = () => {
+    setAudioEnabled(!audioEnabled);
+  };
+
+  return (
+    <div className="main-container">
+      <header className="header">
+        <h1>Pokémon TCG Timer</h1>
+      </header>
+      <div className="game-container">
+        {!gameStarted ? (
+          <div className="start-buttons">
+            <button className="poke-button" onClick={() => startGame(1)}>
+              Start Player 1
+            </button>
+            <button className="poke-button" onClick={() => startGame(2)}>
+              Start Player 2
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div className="player-timers">
+              <div className="player">
+                <h2>{player1Name}</h2>
+                <div className="timer">{Math.floor(player1Time / 60)}:{player1Time % 60}</div>
+              </div>
+              <div className="player">
+                <h2>{player2Name}</h2>
+                <div className="timer">{Math.floor(player2Time / 60)}:{player2Time % 60}</div>
+              </div>
+            </div>
+            <button className="poke-button" onClick={passTurn}>
+              Pass Turn
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default MainComponent;
 import React, { useState, useEffect, useRef } from "react";
 import "./MainComponent.css";
 
