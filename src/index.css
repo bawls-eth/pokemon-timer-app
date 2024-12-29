@@ -1,10 +1,20 @@
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Arial", sans-serif;
+  font-family: "Press Start 2P", sans-serif;
+  background: linear-gradient(to bottom, #ddd, #aaa);
+  color: black;
+  text-align: center;
 }
 
-button {
-  outline: none;
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
