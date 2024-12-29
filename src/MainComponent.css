@@ -1,8 +1,14 @@
+:root {
+  --pokemon-yellow: #FFCB05;
+  --pokemon-blue: #3D7DCA;
+  --pokemon-navy: #003A70;
+}
+
 .main-container {
   font-family: "Press Start 2P", sans-serif;
   text-align: center;
-  background: linear-gradient(to bottom, #ffcc00, #ff0000, #000000);
-  color: white;
+  background: var(--pokemon-yellow);
+  color: var(--pokemon-navy);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -11,32 +17,57 @@
 }
 
 .header {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 5px black;
+  text-shadow: 2px 2px 5px var(--pokemon-blue);
 }
 
-.start-buttons button,
-.controls button {
-  background: linear-gradient(to bottom, #000, #444);
-  color: #ffcc00;
-  border: 2px solid #ffcc00;
+.player-timer {
+  margin: 20px 0;
+}
+
+.player-timer h2 {
+  font-size: 1.5rem;
+  color: var(--pokemon-blue);
+}
+
+.circle-button {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
   border-radius: 50%;
+  background: var(--pokemon-blue);
+  color: var(--pokemon-yellow);
   font-size: 1.2rem;
-  padding: 15px;
-  margin: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.start-buttons button:hover,
-.controls button:hover {
-  background: linear-gradient(to bottom, #444, #000);
-  transform: scale(1.1);
-}
-
-.player-timers {
   display: flex;
-  justify-content: space-around;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px var(--pokemon-navy);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.circle-button:hover {
+  transform: scale(1.1);
+  background-color: var(--pokemon-navy);
+}
+
+.upkeep-timer {
+  font-size: 1rem;
+  color: var(--pokemon-yellow);
+}
+
+.control-buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: var(--pokemon-navy);
+  color: var(--pokemon-yellow);
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.control-buttons button:hover {
+  background-color: var(--pokemon-blue);
 }
