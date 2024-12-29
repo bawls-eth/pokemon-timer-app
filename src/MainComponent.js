@@ -1,5 +1,5 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import "./MainComponent.css";
 
 function MainComponent() {
   const [activePlayer, setActivePlayer] = useState(null);
@@ -8,38 +8,42 @@ function MainComponent() {
   const [upkeepTime, setUpkeepTime] = useState(30);
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const [player1Name, setPlayer1Name] = useState("Player 1");
-  const [player2Name, setPlayer2Name] = useState("Player 2");
   const [gameStarted, setGameStarted] = useState(false);
   const [upkeepDefault, setUpkeepDefault] = useState(30);
-  const [showSettings, setShowSettings] = useState(false);
   const [gameTime, setGameTime] = useState(20);
 
-  // Updated Sound Paths
-  const plinkSound = new Audio(process.env.PUBLIC_URL + "/sounds/plink.mp3");
-  const victorySound = new Audio(process.env.PUBLIC_URL + "/sounds/victory.mp3");
-  const lowHealthAudio = new Audio(process.env.PUBLIC_URL + "/sounds/low-health.mp3");
-  const battleSound = new Audio(process.env.PUBLIC_URL + "/sounds/battle.mp3");
+  // Sound files (using refs to avoid overlapping sounds)
+  const startGameSound = useRef(new Audio("./sounds/pokemon-battle.mp3"));
+  const plinkSound = useRef(new Audio("./sounds/plink.mp3"));
+  const lowHealthSound = useRef(new Audio("./sounds/low-health-critical-health-pokemon.mp3"));
+  const victorySound = useRef(new Audio("./sounds/pokemon-red-blue-music-wild-pokemon-victory-theme-1.mp3"));
 
+  // Helper function to play sounds without overlap
+  const playSound = (sound) => {
+    if (audioEnabled) {
+      sound.pause();
+      sound.currentTime = 0;
+      sound.play().catch((e) => console.log("Sound failed to play:", e));
+    }
+  };
+
+  // Timer for active player
   useEffect(() => {
     let interval;
-    if (activePlayer && gameStarted && !isPaused) {
+    if (gameStarted && activePlayer) {
       interval = setInterval(() => {
         if (activePlayer === 1) {
           setPlayer1Time((prev) => {
-            if (prev === 0) {
-              playSound(victorySound);
-              endGame();
+            if (prev <= 0) {
+              handleGameOver();
               return 0;
             }
             return prev - 1;
           });
-        } else if (activePlayer === 2) {
+        } else {
           setPlayer2Time((prev) => {
-            if (prev === 0) {
-              playSound(victorySound);
-              endGame();
+            if (prev <= 0) {
+              handleGameOver();
               return 0;
             }
             return prev - 1;
@@ -48,19 +52,18 @@ function MainComponent() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [activePlayer, gameStarted, isPaused]);
+  }, [activePlayer, gameStarted]);
 
+  // Upkeep timer
   useEffect(() => {
     let upkeepInterval;
-    if (isUpkeepActive && !isPaused) {
+    if (isUpkeepActive) {
       upkeepInterval = setInterval(() => {
         setUpkeepTime((prev) => {
           if (prev <= 10 && prev > 0) {
-            playSound(lowHealthAudio);
+            playSound(lowHealthSound.current);
           }
           if (prev <= 0) {
-            playSound(victorySound);
-            resetUpkeep();
             setIsUpkeepActive(false);
             return upkeepDefault;
           }
@@ -70,190 +73,122 @@ function MainComponent() {
     }
     return () => {
       clearInterval(upkeepInterval);
-      lowHealthAudio.pause();
-      lowHealthAudio.currentTime = 0;
+      lowHealthSound.current.pause();
+      lowHealthSound.current.currentTime = 0;
     };
-  }, [isUpkeepActive, upkeepDefault, isPaused]);
+  }, [isUpkeepActive, upkeepDefault]);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  // Handle game over
+  const handleGameOver = () => {
+    setGameStarted(false);
+    setActivePlayer(null);
+    playSound(victorySound.current);
   };
 
-  const playSound = (sound) => {
-    if (audioEnabled && sound) {
-      sound.currentTime = 0;
-      sound.play().catch((e) => console.log("Sound failed to play:", e));
-    }
-  };
-
+  // Button functions
   const startGame = (player) => {
     setGameStarted(true);
     setActivePlayer(player);
-    playSound(battleSound);
-  };
-
-  const endGame = () => {
-    setGameStarted(false);
-    battleSound.pause();
-    setActivePlayer(null);
+    setPlayer1Time(gameTime * 60);
+    setPlayer2Time(gameTime * 60);
+    playSound(startGameSound.current);
   };
 
   const passTurn = () => {
-    playSound(plinkSound);
-    setIsUpkeepActive(false);
-    lowHealthAudio.pause();
-    lowHealthAudio.currentTime = 0;
-    setActivePlayer(activePlayer === 1 ? 2 : 1);
+    playSound(plinkSound.current);
+    setActivePlayer((prev) => (prev === 1 ? 2 : 1));
+    resetUpkeep();
   };
 
   const startUpkeep = () => {
-    playSound(plinkSound);
+    playSound(plinkSound.current);
     setIsUpkeepActive(true);
   };
 
   const resetUpkeep = () => {
-    playSound(plinkSound);
+    playSound(plinkSound.current);
     setUpkeepTime(upkeepDefault);
     setIsUpkeepActive(false);
-    lowHealthAudio.pause();
-    lowHealthAudio.currentTime = 0;
-  };
-
-  const toggleAudio = () => {
-    setAudioEnabled(!audioEnabled);
-    battleSound.pause();
-    lowHealthAudio.pause();
   };
 
   const resetAll = () => {
-    battleSound.pause();
-    lowHealthAudio.pause();
-    playSound(plinkSound);
+    playSound(plinkSound.current);
     setGameStarted(false);
     setActivePlayer(null);
     setPlayer1Time(gameTime * 60);
     setPlayer2Time(gameTime * 60);
     setUpkeepTime(upkeepDefault);
     setIsUpkeepActive(false);
-    setIsPaused(false);
   };
 
-  const toggleSettings = () => setShowSettings(!showSettings);
+  const toggleAudio = () => {
+    setAudioEnabled((prev) => !prev);
+    lowHealthSound.current.pause();
+    startGameSound.current.pause();
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-500 via-white to-black font-retro">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden border-4 border-red-500">
-        <div className="p-4 bg-red-500 border-b-4 border-black text-white">
-          <h1 className="text-3xl text-center font-bold">Pokémon TCG Timer</h1>
+    <div className="main-container">
+      <div className="header">
+        <h1>Pokémon TCG Timer</h1>
+      </div>
+      {!gameStarted ? (
+        <div className="start-buttons">
+          <button className="start-button" onClick={() => startGame(1)}>
+            Start Player 1
+          </button>
+          <button className="start-button" onClick={() => startGame(2)}>
+            Start Player 2
+          </button>
         </div>
-
-        {!gameStarted ? (
-          <div className="p-4 text-center space-x-4">
-            <button
-              onClick={() => startGame(1)}
-              className="bg-green-500 hover:bg-green-600 text-white px-8 py-8 rounded-full shadow-lg"
-            >
-              Start Player 1
+      ) : (
+        <>
+          <div className="player-timers">
+            <div className="player">
+              <h2>{player1Time > 0 ? "Player 1" : "Time's Up!"}</h2>
+              <div className="timer">{formatTime(player1Time)}</div>
+              <button className="pass-turn-button" onClick={passTurn}>
+                Pass Turn
+              </button>
+            </div>
+            <div className="player">
+              <h2>{player2Time > 0 ? "Player 2" : "Time's Up!"}</h2>
+              <div className="timer">{formatTime(player2Time)}</div>
+              <button className="pass-turn-button" onClick={passTurn}>
+                Pass Turn
+              </button>
+            </div>
+          </div>
+          <div className="upkeep-section">
+            <div className={`upkeep-timer ${upkeepTime <= 10 ? "flash-red" : ""}`}>
+              {formatTime(upkeepTime)}
+            </div>
+            <button className="upkeep-button" onClick={startUpkeep}>
+              Start Upkeep
             </button>
-            <button
-              onClick={() => startGame(2)}
-              className="bg-green-500 hover:bg-green-600 text-white px-8 py-8 rounded-full shadow-lg"
-            >
-              Start Player 2
+            <button className="upkeep-button" onClick={resetUpkeep}>
+              Reset Upkeep
             </button>
           </div>
-        ) : (
-          <>
-            <div className="p-4 border-b border-black">
-              <div className="text-center mb-4">
-                <div
-                  className={`text-5xl font-bold text-red-700 ${
-                    upkeepTime <= 10 && upkeepTime > 0
-                      ? "animate-pulse text-red-500"
-                      : ""
-                  }`}
-                >
-                  {formatTime(player1Time)}
-                </div>
-                <p className="text-black">{player1Name}</p>
-                <button
-                  onClick={passTurn}
-                  className="bg-red-500 hover:bg-red-600 text-white px-8 py-8 rounded-full shadow-lg"
-                >
-                  Pass Turn
-                </button>
-              </div>
-            </div>
-
-            <div className="p-4 bg-black text-white">
-              <div className="text-center mb-4">
-                <div
-                  className={`text-4xl font-bold ${
-                    upkeepTime <= 10 && isUpkeepActive ? "animate-pulse" : ""
-                  }`}
-                >
-                  {formatTime(upkeepTime)}
-                </div>
-                <p>Upkeep Timer</p>
-                <button
-                  onClick={startUpkeep}
-                  className="bg-red-500 hover:bg-red-600 text-white px-8 py-8 rounded-full shadow-lg"
-                >
-                  Start Upkeep
-                </button>
-                <button
-                  onClick={resetUpkeep}
-                  className="bg-white hover:bg-gray-200 text-black px-8 py-8 rounded-full shadow-lg ml-2"
-                >
-                  Reset Upkeep
-                </button>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-black">
-              <div className="text-center">
-                <div className="text-5xl font-bold text-black">
-                  {formatTime(player2Time)}
-                </div>
-                <p className="text-black">{player2Name}</p>
-                <button
-                  onClick={passTurn}
-                  className="bg-red-500 hover:bg-red-600 text-white px-8 py-8 rounded-full shadow-lg"
-                >
-                  Pass Turn
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className="p-4 bg-red-500 text-white border-t-4 border-black">
-          <div className="flex justify-around">
-            <button
-              onClick={toggleAudio}
-              className="px-8 py-8 bg-black text-white rounded-full shadow-lg"
-            >
-              {audioEnabled ? "🔇" : "🔊"}
-            </button>
-            <button
-              onClick={toggleSettings}
-              className="px-8 py-8 bg-black text-white rounded-full shadow-lg"
-            >
-              ⚙️
-            </button>
-            <button
-              onClick={resetAll}
-              className="px-8 py-8 bg-white text-black rounded-full shadow-lg"
-            >
-              🔄
-            </button>
-          </div>
-        </div>
+        </>
+      )}
+      <div className="controls">
+        <button className="control-button" onClick={resetAll}>
+          Reset All
+        </button>
+        <button className="control-button" onClick={toggleAudio}>
+          {audioEnabled ? "Mute" : "Unmute"}
+        </button>
       </div>
     </div>
   );
 }
+
+// Helper function to format time
+const formatTime = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
 
 export default MainComponent;
