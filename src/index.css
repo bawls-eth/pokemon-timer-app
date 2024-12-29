@@ -1,40 +1,118 @@
-/* Global Styles */
 body {
   margin: 0;
-  font-family: 'Press Start 2P', cursive;
-  background-color: #f5f5f5;
-}
-
-.App {
+  padding: 0;
+  font-family: "Press Start 2P", sans-serif;
+  background: linear-gradient(to bottom, #ff0000, #ffffff, #000000);
+  color: #333;
   text-align: center;
 }
 
-button {
+.main-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 5px solid #ffcb05;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #0075be;
+  margin-bottom: 20px;
+}
+
+.start-buttons,
+.controls {
+  margin: 20px 0;
+}
+
+.pokeball-button {
+  background-color: white;
+  color: black;
+  border: 3px solid #d0192c;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  outline: none;
+  transition: transform 0.3s ease;
 }
 
-button:hover {
-  transform: scale(1.05);
+.pokeball-button:hover {
+  transform: scale(1.1);
 }
 
-button:active {
-  transform: scale(0.95);
+.pokeball-button:active {
+  transform: scale(0.9);
 }
 
-/* Timer Pulse Animation */
-@keyframes pulse {
-  0% {
-    background-color: #ffcccc;
+.player-timers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.player {
+  text-align: center;
+  margin: 0 10px;
+}
+
+.timer {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.upkeep-section {
+  margin: 20px 0;
+}
+
+.upkeep-timer {
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+.flash-red {
+  animation: flash-red 1s infinite alternate;
+}
+
+@keyframes flash-red {
+  from {
+    background-color: white;
   }
-  50% {
-    background-color: #ff6666;
-  }
-  100% {
-    background-color: #ffcccc;
+  to {
+    background-color: red;
   }
 }
 
-.animate-pulse {
-  animation: pulse 1s infinite;
+.settings-panel {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 2px solid #ccc;
+  margin: 20px auto;
+  border-radius: 8px;
+  max-width: 400px;
+}
+
+.settings-panel label {
+  display: block;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.settings-panel input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.controls {
+  margin-top: 20px;
 }

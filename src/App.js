@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import MainComponent from "./MainComponent";
 
 function App() {
@@ -10,3 +11,4 @@ function App() {
 }
 
 export default App;
+
