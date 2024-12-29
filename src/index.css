@@ -1,118 +1,112 @@
-body {
+/* General reset */
+body, html {
   margin: 0;
   padding: 0;
-  font-family: "Press Start 2P", sans-serif;
-  background: linear-gradient(to bottom, #ff0000, #ffffff, #000000);
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  background: linear-gradient(to bottom, #ffcc00, #ff0000);
   color: #333;
-  text-align: center;
 }
 
+/* Main container styling */
 .main-container {
-  max-width: 600px;
-  margin: 0 auto;
+  text-align: center;
   padding: 20px;
-  background: #f9f9f9;
-  border: 5px solid #ffcb05;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.header h1 {
-  font-size: 24px;
-  color: #0075be;
+/* Header styles */
+.header {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
   margin-bottom: 20px;
 }
 
-.start-buttons,
-.controls {
-  margin: 20px 0;
+.header h1 {
+  margin: 0;
+  font-size: 24px;
 }
 
-.pokeball-button {
-  background-color: white;
-  color: black;
-  border: 3px solid #d0192c;
-  border-radius: 50%;
+/* Timer display */
+.timer {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+/* Buttons styling */
+button {
+  display: inline-block;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 15px;
+  margin: 5px;
+  border: 3px solid #333;
+  border-radius: 50%; /* Round buttons resembling Pokéballs */
   width: 100px;
   height: 100px;
-  font-size: 14px;
-  font-weight: bold;
   cursor: pointer;
-  outline: none;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.pokeball-button:hover {
+button:hover {
+  background: #ffcc00;
+  color: #000;
   transform: scale(1.1);
 }
 
-.pokeball-button:active {
-  transform: scale(0.9);
+/* Start buttons */
+.start-buttons button {
+  background: linear-gradient(to bottom, #ffcc00, #ff0000);
+  color: #fff;
 }
 
+/* Player timers */
 .player-timers {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  justify-content: space-around;
+  margin: 20px 0;
 }
 
 .player {
   text-align: center;
-  margin: 0 10px;
 }
 
-.timer {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
+/* Upkeep section */
 .upkeep-section {
   margin: 20px 0;
 }
 
 .upkeep-timer {
-  font-size: 20px;
+  font-size: 28px;
   font-weight: bold;
-  color: black;
+  color: #ff0000;
+  animation: pulse 1s infinite; /* Flashing red animation for upkeep timer */
 }
 
-.flash-red {
-  animation: flash-red 1s infinite alternate;
-}
-
-@keyframes flash-red {
-  from {
-    background-color: white;
-  }
-  to {
-    background-color: red;
-  }
-}
-
-.settings-panel {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border: 2px solid #ccc;
-  margin: 20px auto;
-  border-radius: 8px;
-  max-width: 400px;
-}
-
-.settings-panel label {
-  display: block;
-  margin: 10px 0;
-  font-size: 14px;
-}
-
-.settings-panel input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+/* Controls section */
 .controls {
   margin-top: 20px;
+}
+
+.controls button {
+  background: linear-gradient(to bottom, #ff0000, #ffcc00);
+  color: #fff;
+}
+
+/* Animation for flashing timer */
+@keyframes pulse {
+  0% {
+    color: #ff0000;
+  }
+  50% {
+    color: #ffcc00;
+  }
+  100% {
+    color: #ff0000;
+  }
 }

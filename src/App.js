@@ -1,14 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import MainComponent from "./MainComponent";
+import "./MainComponent.css";
 
 function App() {
-  return (
-    <div className="App">
-      <MainComponent />
-    </div>
-  );
+  return <MainComponent />;
 }
 
 export default App;
-
