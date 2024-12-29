@@ -1,0 +1,40 @@
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', cursive;
+  background-color: #f5f5f5;
+}
+
+.App {
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Timer Pulse Animation */
+@keyframes pulse {
+  0% {
+    background-color: #ffcccc;
+  }
+  50% {
+    background-color: #ff6666;
+  }
+  100% {
+    background-color: #ffcccc;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1s infinite;
+}
