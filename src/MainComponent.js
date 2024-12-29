@@ -12,13 +12,13 @@ function MainComponent() {
   const [upkeepDefault, setUpkeepDefault] = useState(30);
   const [gameTime, setGameTime] = useState(20);
 
-  // Sound files (using refs to avoid overlapping sounds)
-  const startGameSound = useRef(new Audio("./sounds/pokemon-battle.mp3"));
-  const plinkSound = useRef(new Audio("./sounds/plink.mp3"));
-  const lowHealthSound = useRef(new Audio("./sounds/low-health-critical-health-pokemon.mp3"));
-  const victorySound = useRef(new Audio("./sounds/pokemon-red-blue-music-wild-pokemon-victory-theme-1.mp3"));
+  // Sound files
+  const startGameSound = useRef(new Audio(process.env.PUBLIC_URL + "/sounds/battle.mp3"));
+  const plinkSound = useRef(new Audio(process.env.PUBLIC_URL + "/sounds/plink.mp3"));
+  const lowHealthSound = useRef(new Audio(process.env.PUBLIC_URL + "/sounds/low-health.mp3"));
+  const victorySound = useRef(new Audio(process.env.PUBLIC_URL + "/sounds/victory.mp3"));
 
-  // Helper function to play sounds without overlap
+  // Helper function to play sounds
   const playSound = (sound) => {
     if (audioEnabled) {
       sound.pause();
