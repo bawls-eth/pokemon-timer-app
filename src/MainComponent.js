@@ -12,7 +12,6 @@ function MainComponent() {
   const [showSettings, setShowSettings] = useState(false);
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
-  const [skin, setSkin] = useState("pikachu-theme");
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
   const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
@@ -35,23 +34,21 @@ function MainComponent() {
   };
 
   useEffect(() => {
-    const savedSkin = localStorage.getItem("selectedSkin");
-    if (savedSkin) setSkin(savedSkin);
-  }, []);
-
-  const handleSkinChange = (newSkin) => {
-    setSkin(newSkin);
-    localStorage.setItem("selectedSkin", newSkin);
-  };
-
-  useEffect(() => {
     let interval;
     if (gameStarted && activePlayer) {
       interval = setInterval(() => {
         if (activePlayer === 1) {
-          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : 0));
+          setPlayer1Time((prev) => {
+            if (prev === 60) playSound(lowHealthSound.current); // Last minute for game timer
+            if (prev === 0) playSound(victorySound.current);
+            return prev > 0 ? prev - 1 : 0;
+          });
         } else {
-          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : 0));
+          setPlayer2Time((prev) => {
+            if (prev === 60) playSound(lowHealthSound.current); // Last minute for game timer
+            if (prev === 0) playSound(victorySound.current);
+            return prev > 0 ? prev - 1 : 0;
+          });
         }
       }, 1000);
     }
@@ -63,10 +60,8 @@ function MainComponent() {
     if (isUpkeepActive) {
       interval = setInterval(() => {
         setUpkeepTime((prev) => {
-          if (prev <= 10 && prev > 0) {
-            playSound(lowHealthSound.current);
-          }
-          if (prev <= 1) {
+          if (prev === 10) playSound(lowHealthSound.current); // Upkeep timer low health
+          if (prev <= 0) {
             setIsUpkeepActive(false);
             return 30;
           }
@@ -100,14 +95,9 @@ function MainComponent() {
   };
 
   const toggleUpkeep = () => {
-    if (isUpkeepActive) {
-      playSound(plinkSound.current);
-      setIsUpkeepActive(false);
-      setUpkeepTime(30);
-    } else {
-      playSound(plinkSound.current);
-      setIsUpkeepActive(true);
-    }
+    playSound(plinkSound.current);
+    setIsUpkeepActive(!isUpkeepActive);
+    if (!isUpkeepActive) setUpkeepTime(30);
   };
 
   const resetGame = () => {
@@ -130,7 +120,7 @@ function MainComponent() {
   };
 
   return (
-    <div className={`main-container ${skin}`}>
+    <div className="main-container">
       <h1 className="header">Pokémon TCG Timer</h1>
       {!gameStarted ? (
         <div className="start-buttons">
@@ -200,36 +190,6 @@ function MainComponent() {
               value={upkeepTime}
               onChange={(e) => setUpkeepTime(e.target.value)}
             />
-          </label>
-          <label>
-            Choose a Skin:
-            <select value={skin} onChange={(e) => handleSkinChange(e.target.value)}>
-              <option value="pikachu-theme">Pikachu</option>
-              <option value="charizard-theme">Charizard</option>
-              <option value="bulbasaur-theme">Bulbasaur</option>
-              <option value="squirtle-theme">Squirtle</option>
-              <option value="jigglypuff-theme">Jigglypuff</option>
-              <option value="meowth-theme">Meowth</option>
-              <option value="gengar-theme">Gengar</option>
-              <option value="eevee-theme">Eevee</option>
-              <option value="snorlax-theme">Snorlax</option>
-              <option value="dragonite-theme">Dragonite</option>
-              <option value="lapras-theme">Lapras</option>
-              <option value="umbreon-theme">Umbreon</option>
-              <option value="espeon-theme">Espeon</option>
-              <option value="lucario-theme">Lucario</option>
-              <option value="togepi-theme">Togepi</option>
-              <option value="machamp-theme">Machamp</option>
-              <option value="mewtwo-theme">Mewtwo</option>
-              <option value="mew-theme">Mew</option>
-              <option value="psyduck-theme">Psyduck</option>
-              <option value="arcanine-theme">Arcanine</option>
-              <option value="articuno-theme">Articuno</option>
-              <option value="zapdos-theme">Zapdos</option>
-              <option value="moltres-theme">Moltres</option>
-              <option value="raichu-theme">Raichu</option>
-              <option value="lugia-theme">Lugia</option>
-            </select>
           </label>
           <button onClick={saveSettings}>Save</button>
         </div>
