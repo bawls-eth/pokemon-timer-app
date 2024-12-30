@@ -48,12 +48,8 @@ function MainComponent() {
       const interval = setInterval(() => {
         setUpkeepTime((prev) => {
           if (prev <= 1) {
-            playSound(victorySound.current);
             setIsUpkeepActive(false);
             return 30;
-          }
-          if (prev <= 10) {
-            playSound(lowHealthSound.current);
           }
           return prev - 1;
         });
@@ -119,7 +115,7 @@ function MainComponent() {
             </p>
           </div>
           <div className="circle-button" onClick={passTurn}>
-            <p className={isUpkeepActive ? "upkeep-active" : ""}>
+            <p className="upkeep-timer">
               {isUpkeepActive ? formatTime(upkeepTime) : "Pass Turn"}
             </p>
           </div>
