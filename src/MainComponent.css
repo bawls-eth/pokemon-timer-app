@@ -17,11 +17,13 @@ html,
 }
 
 .header {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 20px;
   text-shadow: 2px 2px 5px #f00000;
+  text-align: center;
 }
 
+/* Player Timers */
 .player-timer {
   display: flex;
   flex-direction: column;
@@ -34,22 +36,33 @@ html,
   color: #f00000;
 }
 
+.player-timer p {
+  font-size: 1.2rem;
+}
+
+/* Center-align buttons */
+.circle-button,
+.square-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Circle Button (Pass Turn) */
 .circle-button {
   width: 20vw;
   height: 20vw;
   max-width: 150px;
   max-height: 150px;
   border-radius: 50%;
-  margin: 20px 0;
   background: #ffffff;
   color: #222224;
   font-size: 1.2rem;
   border: 2px solid #222224;
   box-shadow: 2px 2px 5px #ee1515;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: 20px 0;
   transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
@@ -58,6 +71,7 @@ html,
   color: #ffffff;
 }
 
+/* Square Button (Start Upkeep) */
 .square-button {
   width: 20vw;
   height: 20vw;
@@ -70,9 +84,6 @@ html,
   box-shadow: 2px 2px 5px #ee1515;
   font-size: 1.2rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
@@ -81,6 +92,7 @@ html,
   color: #ffffff;
 }
 
+/* Critical Timer */
 .critical {
   color: red;
   animation: flash 1s infinite;
@@ -96,12 +108,13 @@ html,
   }
 }
 
+/* Control Buttons */
 .control-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   margin-top: 20px;
-  width: 80%;
+  width: 90%;
 }
 
 .control-buttons button {
@@ -113,14 +126,33 @@ html,
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
   font-size: 0.9rem;
+  transition: background-color 0.3s;
 }
 
 .control-buttons button:hover {
   background-color: #222224;
 }
 
+/* Responsive Adjustments for Mobile */
+@media (max-width: 768px) {
+  .circle-button,
+  .square-button {
+    width: 40vw;
+    height: 40vw;
+    font-size: 1.5rem;
+  }
+
+  .control-buttons button {
+    font-size: 1rem;
+  }
+
+  .player-timer p {
+    font-size: 1rem;
+  }
+}
+
+/* Settings Modal */
 .settings-modal {
   position: fixed;
   top: 50%;
@@ -154,3 +186,4 @@ html,
 .settings-modal button:hover {
   background: #ee1515;
 }
+
