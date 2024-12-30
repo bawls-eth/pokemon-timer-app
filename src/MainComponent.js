@@ -113,15 +113,21 @@ function MainComponent() {
   const passTurn = () => {
     playSound(plinkSound.current);
     setIsUpkeepActive(false);
+    lowHealthSound.current.pause();
+    lowHealthSound.current.currentTime = 0;
     setUpkeepTime(30);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
   };
 
   const toggleUpkeep = () => {
     playSound(plinkSound.current);
-    setIsUpkeepActive(!isUpkeepActive);
-    if (!isUpkeepActive) {
+    if (isUpkeepActive) {
+      lowHealthSound.current.pause();
+      lowHealthSound.current.currentTime = 0;
+      setIsUpkeepActive(false);
       setUpkeepTime(30);
+    } else {
+      setIsUpkeepActive(true);
     }
   };
 
