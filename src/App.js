@@ -1,6 +1,9 @@
 import React from "react";
 import MainComponent from "./MainComponent";
 
-const App = () => <MainComponent />;
+function App() {
+  return <MainComponent />;
+}
 
 export default App;
+

@@ -1,35 +1,35 @@
 :root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --accent-color: #ff0000;
+  --bg-color: #f0f0f0;
+  --text-color: #222224;
+  --accent-color: #f00000;
 }
 
 body {
+  margin: 0;
+  font-family: "Press Start 2P", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: "Press Start 2P", sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
   text-align: center;
 }
 
 button {
+  font-family: inherit;
+  font-size: 1rem;
   background-color: var(--accent-color);
   color: var(--text-color);
-  border: none;
-  border-radius: 5px;
+  border: 2px solid var(--text-color);
   padding: 10px 20px;
-  font-size: 1rem;
-  font-family: inherit;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s ease-in-out;
 }
 
 button:hover {
   background-color: var(--text-color);
   color: var(--accent-color);
 }
+
+h1, h2, p {
+  margin: 10px 0;
+}
+
