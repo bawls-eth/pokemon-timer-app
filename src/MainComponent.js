@@ -49,11 +49,16 @@ function MainComponent() {
   }, [gameStarted, activePlayer]);
 
   useEffect(() => {
+    let interval;
     if (isUpkeepActive) {
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         setUpkeepTime((prev) => {
+          if (prev <= 10 && prev > 0) {
+            playSound(lowHealthSound.current);
+          }
           if (prev <= 1) {
             setIsUpkeepActive(false);
+            stopAllSounds();
             return 30;
           }
           return prev - 1;
@@ -90,6 +95,7 @@ function MainComponent() {
       playSound(plinkSound.current);
       setIsUpkeepActive(false);
       setUpkeepTime(30);
+      stopAllSounds();
     } else {
       playSound(plinkSound.current);
       setIsUpkeepActive(true);
@@ -128,7 +134,7 @@ function MainComponent() {
             <p>{formatTime(player1Time)}</p>
           </div>
           <div className="circle-button" onClick={passTurn}>
-            <p className="upkeep-timer">
+            <p className={`upkeep-timer ${upkeepTime <= 10 ? "critical" : ""}`}>
               {isUpkeepActive ? formatTime(upkeepTime) : "Pass Turn"}
             </p>
           </div>
@@ -136,10 +142,10 @@ function MainComponent() {
             <h2>{player2Name}</h2>
             <p>{formatTime(player2Time)}</p>
           </div>
+          <button className="square-button" onClick={toggleUpkeep}>
+            {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
+          </button>
           <div className="control-buttons">
-            <button onClick={toggleUpkeep}>
-              {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
-            </button>
             <button onClick={resetGame}>Reset Game</button>
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}

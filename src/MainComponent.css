@@ -43,36 +43,52 @@
   color: #ffffff;
 }
 
-.settings-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.square-button {
+  width: 150px;
+  height: 150px;
+  margin: 10px auto;
   background: #ffffff;
+  color: #222224;
   border: 2px solid #222224;
-  padding: 20px;
-  z-index: 10;
+  box-shadow: 2px 2px 5px #ee1515;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
-.settings-modal label {
-  display: block;
-  margin: 10px 0;
+.square-button:hover {
+  background-color: #f00000;
+  color: #ffffff;
 }
 
-.settings-modal input {
-  margin-left: 10px;
-  padding: 5px;
+.critical {
+  color: red;
+  animation: flash 1s infinite;
 }
 
-.settings-modal button {
-  margin-top: 20px;
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.control-buttons button {
+  margin: 10px;
   padding: 10px 20px;
-  background: #f00000;
+  background-color: #f00000;
   color: #ffffff;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
-.settings-modal button:hover {
-  background: #ee1515;
+.control-buttons button:hover {
+  background-color: #222224;
 }
