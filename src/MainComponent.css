@@ -1,142 +1,74 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./MainComponent.css";
-
-function MainComponent() {
-  const [activePlayer, setActivePlayer] = useState(null);
-  const [player1Time, setPlayer1Time] = useState(20 * 60);
-  const [player2Time, setPlayer2Time] = useState(20 * 60);
-  const [upkeepTime, setUpkeepTime] = useState(30);
-  const [isUpkeepActive, setIsUpkeepActive] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [audioEnabled, setAudioEnabled] = useState(true);
-
-  const startGameSound = useRef(new Audio("/sounds/battle.mp3"));
-  const lowHealthSound = useRef(new Audio("/sounds/low-health.mp3"));
-  const victorySound = useRef(new Audio("/sounds/victory.mp3"));
-
-  const playSound = (sound) => {
-    if (audioEnabled) {
-      sound.pause();
-      sound.currentTime = 0;
-      sound.play().catch((e) => console.error("Sound failed:", e));
-    }
-  };
-
-  const stopAllSounds = () => {
-    [startGameSound, lowHealthSound, victorySound].forEach((soundRef) => {
-      soundRef.pause();
-      soundRef.currentTime = 0;
-    });
-  };
-
-  useEffect(() => {
-    let interval;
-    if (gameStarted && activePlayer) {
-      interval = setInterval(() => {
-        if (activePlayer === 1) {
-          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : 0));
-        } else {
-          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : 0));
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [gameStarted, activePlayer]);
-
-  useEffect(() => {
-    if (isUpkeepActive) {
-      const interval = setInterval(() => {
-        setUpkeepTime((prev) => {
-          if (prev <= 1) {
-            setIsUpkeepActive(false);
-            return 30;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [isUpkeepActive]);
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const startGame = (player) => {
-    setGameStarted(true);
-    setActivePlayer(player);
-    setPlayer1Time(20 * 60);
-    setPlayer2Time(20 * 60);
-    playSound(startGameSound.current);
-  };
-
-  const passTurn = () => {
-    stopAllSounds();
-    setIsUpkeepActive(false);
-    setUpkeepTime(30);
-    setActivePlayer((prev) => (prev === 1 ? 2 : 1));
-  };
-
-  const resetUpkeep = () => {
-    setIsUpkeepActive(false);
-    setUpkeepTime(30);
-    stopAllSounds();
-  };
-
-  const resetGame = () => {
-    stopAllSounds();
-    setGameStarted(false);
-    setPlayer1Time(20 * 60);
-    setPlayer2Time(20 * 60);
-    setUpkeepTime(30);
-  };
-
-  const toggleAudio = () => {
-    setAudioEnabled(!audioEnabled);
-    stopAllSounds();
-  };
-
-  return (
-    <div className="main-container">
-      <h1 className="header">Pokémon TCG Timer</h1>
-      {!gameStarted ? (
-        <div className="start-buttons">
-          <button onClick={() => startGame(1)}>Start Game</button>
-        </div>
-      ) : (
-        <div>
-          <div className="player-timer player1">
-            <h2>Player 1</h2>
-            <p className={player1Time <= 10 ? "critical" : ""}>
-              {formatTime(player1Time)}
-            </p>
-          </div>
-          <div className="circle-button" onClick={passTurn}>
-            <p className="upkeep-timer">
-              {isUpkeepActive ? formatTime(upkeepTime) : "Pass Turn"}
-            </p>
-          </div>
-          <div className="player-timer player2">
-            <h2>Player 2</h2>
-            <p className={player2Time <= 10 ? "critical" : ""}>
-              {formatTime(player2Time)}
-            </p>
-          </div>
-          <div className="control-buttons">
-            <button onClick={() => setIsUpkeepActive(true)}>Start Upkeep</button>
-            <button onClick={resetUpkeep}>Reset Upkeep</button>
-            <button onClick={resetGame}>Reset Game</button>
-            <button onClick={toggleAudio}>
-              {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+:root {
+  --red-1: #ee1515;
+  --red-2: #f00000;
+  --dark-gray: #222224;
+  --light-gray: #f0f0f0;
 }
 
-export default MainComponent;
+.main-container {
+  font-family: "Press Start 2P", sans-serif;
+  text-align: center;
+  background: var(--red-1);
+  color: var(--light-gray);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+.header {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 5px var(--red-2);
+}
+
+.player-timer {
+  margin: 20px 0;
+}
+
+.player-timer h2 {
+  font-size: 1.5rem;
+  color: var(--red-2);
+}
+
+.circle-button {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+  border-radius: 50%;
+  background: var(--dark-gray);
+  color: var(--light-gray);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px var(--light-gray);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.circle-button:hover {
+  transform: scale(1.1);
+  background-color: var(--red-2);
+}
+
+.upkeep-timer {
+  font-size: 1rem;
+  color: var(--light-gray);
+}
+
+.control-buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: var(--red-2);
+  color: var(--light-gray);
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.control-buttons button:hover {
+  background-color: var(--dark-gray);
+}
