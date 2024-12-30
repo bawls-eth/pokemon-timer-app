@@ -51,10 +51,10 @@ html,
 
 /* Circle Button (Pass Turn) */
 .circle-button {
-  width: 20vw;
-  height: 20vw;
-  max-width: 150px;
-  max-height: 150px;
+  width: 25vw;
+  height: 25vw;
+  max-width: 200px;
+  max-height: 200px;
   border-radius: 50%;
   background: #ffffff;
   color: #222224;
@@ -73,10 +73,10 @@ html,
 
 /* Square Button (Start Upkeep) */
 .square-button {
-  width: 20vw;
-  height: 20vw;
-  max-width: 150px;
-  max-height: 150px;
+  width: 25vw;
+  height: 25vw;
+  max-width: 200px;
+  max-height: 200px;
   margin: 10px 0;
   background: #ffffff;
   color: #222224;
@@ -111,16 +111,16 @@ html,
 /* Control Buttons */
 .control-buttons {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
-  width: 90%;
 }
 
 .control-buttons button {
-  flex: 1;
-  margin: 0 5px;
+  margin: 10px 0;
   padding: 10px;
+  width: 80%;
+  max-width: 250px;
   background-color: #f00000;
   color: #ffffff;
   border: none;
@@ -138,8 +138,8 @@ html,
 @media (max-width: 768px) {
   .circle-button,
   .square-button {
-    width: 40vw;
-    height: 40vw;
+    width: 50vw;
+    height: 50vw;
     font-size: 1.5rem;
   }
 
@@ -186,4 +186,3 @@ html,
 .settings-modal button:hover {
   background: #ee1515;
 }
-

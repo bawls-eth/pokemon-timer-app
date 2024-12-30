@@ -9,38 +9,25 @@ function MainComponent() {
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [lowHealthTriggered, setLowHealthTriggered] = useState({
-    player1: false,
-    player2: false,
-  });
   const [showSettings, setShowSettings] = useState(false);
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
 
-  // Preload and manage sounds
-  const sounds = useRef({
-    startGameSound: new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`),
-    lowHealthSound: new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`),
-    victorySound: new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`),
-    plinkSound: new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`),
-  });
+  const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
+  const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
+  const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
+  const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
-  useEffect(() => {
-    Object.values(sounds.current).forEach((sound) => {
-      sound.preload = "auto";
-    });
-  }, []);
-
-  const playSound = (sound) => {
+  const playSound = (soundRef) => {
     if (audioEnabled) {
-      sound.pause();
-      sound.currentTime = 0;
-      sound.play().catch((error) => console.error("Audio playback error:", error));
+      soundRef.pause();
+      soundRef.currentTime = 0;
+      soundRef.play().catch((error) => console.error("Audio playback error:", error));
     }
   };
 
   const stopAllSounds = () => {
-    Object.values(sounds.current).forEach((sound) => {
+    [startGameSound.current, lowHealthSound.current, victorySound.current, plinkSound.current].forEach((sound) => {
       sound.pause();
       sound.currentTime = 0;
     });
@@ -51,36 +38,14 @@ function MainComponent() {
     if (gameStarted && activePlayer) {
       interval = setInterval(() => {
         if (activePlayer === 1) {
-          setPlayer1Time((prev) => {
-            if (prev <= 1) {
-              playSound(sounds.current.victorySound);
-              setGameStarted(false);
-              return 0;
-            }
-            if (prev <= 60 && !lowHealthTriggered.player1) {
-              playSound(sounds.current.lowHealthSound);
-              setLowHealthTriggered((prev) => ({ ...prev, player1: true }));
-            }
-            return prev - 1;
-          });
+          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : 0));
         } else {
-          setPlayer2Time((prev) => {
-            if (prev <= 1) {
-              playSound(sounds.current.victorySound);
-              setGameStarted(false);
-              return 0;
-            }
-            if (prev <= 60 && !lowHealthTriggered.player2) {
-              playSound(sounds.current.lowHealthSound);
-              setLowHealthTriggered((prev) => ({ ...prev, player2: true }));
-            }
-            return prev - 1;
-          });
+          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : 0));
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [gameStarted, activePlayer, lowHealthTriggered]);
+  }, [gameStarted, activePlayer]);
 
   useEffect(() => {
     let interval;
@@ -88,11 +53,10 @@ function MainComponent() {
       interval = setInterval(() => {
         setUpkeepTime((prev) => {
           if (prev <= 10 && prev > 0) {
-            playSound(sounds.current.lowHealthSound);
+            playSound(lowHealthSound.current);
           }
           if (prev <= 1) {
             setIsUpkeepActive(false);
-            stopAllSounds();
             return 30;
           }
           return prev - 1;
@@ -114,12 +78,11 @@ function MainComponent() {
     setActivePlayer(player);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
-    playSound(sounds.current.startGameSound);
-    setLowHealthTriggered({ player1: false, player2: false });
+    playSound(startGameSound.current);
   };
 
   const passTurn = () => {
-    playSound(sounds.current.plinkSound);
+    playSound(plinkSound.current);
     setIsUpkeepActive(false);
     setUpkeepTime(30);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
@@ -127,25 +90,23 @@ function MainComponent() {
 
   const toggleUpkeep = () => {
     if (isUpkeepActive) {
-      playSound(sounds.current.plinkSound);
+      playSound(plinkSound.current);
       setIsUpkeepActive(false);
       setUpkeepTime(30);
-      stopAllSounds();
     } else {
-      playSound(sounds.current.plinkSound);
+      playSound(plinkSound.current);
       setIsUpkeepActive(true);
     }
   };
 
   const resetGame = () => {
-    playSound(sounds.current.plinkSound);
+    playSound(plinkSound.current);
     stopAllSounds();
     setGameStarted(false);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
     setUpkeepTime(30);
     setIsUpkeepActive(false);
-    setLowHealthTriggered({ player1: false, player2: false });
   };
 
   const toggleAudio = () => {
