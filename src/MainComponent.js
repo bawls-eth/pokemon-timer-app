@@ -85,10 +85,15 @@ function MainComponent() {
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
   };
 
-  const resetUpkeep = () => {
-    playSound(plinkSound.current);
-    setIsUpkeepActive(false);
-    setUpkeepTime(30);
+  const toggleUpkeep = () => {
+    if (isUpkeepActive) {
+      playSound(plinkSound.current);
+      setIsUpkeepActive(false);
+      setUpkeepTime(30);
+    } else {
+      playSound(plinkSound.current);
+      setIsUpkeepActive(true);
+    }
   };
 
   const resetGame = () => {
@@ -132,8 +137,9 @@ function MainComponent() {
             <p>{formatTime(player2Time)}</p>
           </div>
           <div className="control-buttons">
-            <button onClick={() => { setIsUpkeepActive(true); playSound(plinkSound.current); }}>Start Upkeep</button>
-            <button onClick={resetUpkeep}>Reset Upkeep</button>
+            <button onClick={toggleUpkeep}>
+              {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
+            </button>
             <button onClick={resetGame}>Reset Game</button>
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
