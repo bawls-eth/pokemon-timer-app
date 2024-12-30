@@ -1,45 +1,46 @@
-/* General Layout */
+/* General styles */
+body,
 html,
-body {
+.main-container {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent scrolling */
-  width: 100vw;
   height: 100vh;
-}
-
-.main-container {
-  font-family: "Press Start 2P", sans-serif;
-  text-align: center;
-  background: #f0f0f0;
-  color: #222224;
-  min-height: 100vh;
-  max-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: "Press Start 2P", sans-serif;
+  background-color: #f0f0f0;
+  color: #222224;
+  overflow: hidden; /* Prevent scrolling on mobile */
 }
 
-/* Header Styling */
 .header {
   font-size: 2rem;
   margin-bottom: 20px;
   text-shadow: 2px 2px 5px #f00000;
 }
 
-/* Timer Sections */
+.player-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .player-timer h2 {
   font-size: 1.5rem;
   color: #f00000;
 }
 
 .circle-button {
-  width: 150px;
-  height: 150px;
-  margin: 10px auto;
+  width: 20vw;
+  height: 20vw;
+  max-width: 150px;
+  max-height: 150px;
   border-radius: 50%;
+  margin: 20px 0;
   background: #ffffff;
   color: #222224;
   font-size: 1.2rem;
@@ -58,9 +59,11 @@ body {
 }
 
 .square-button {
-  width: 150px;
-  height: 150px;
-  margin: 10px auto;
+  width: 20vw;
+  height: 20vw;
+  max-width: 150px;
+  max-height: 150px;
+  margin: 10px 0;
   background: #ffffff;
   color: #222224;
   border: 2px solid #222224;
@@ -78,14 +81,14 @@ body {
   color: #ffffff;
 }
 
-/* Critical Flashing Effect */
 .critical {
   color: red;
   animation: flash 1s infinite;
 }
 
 @keyframes flash {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -93,23 +96,31 @@ body {
   }
 }
 
-/* Control Buttons */
+.control-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 20px;
+  width: 80%;
+}
+
 .control-buttons button {
-  margin: 10px;
-  padding: 10px 20px;
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px;
   background-color: #f00000;
   color: #ffffff;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
+  font-size: 0.9rem;
 }
 
 .control-buttons button:hover {
   background-color: #222224;
 }
 
-/* Settings Modal */
 .settings-modal {
   position: fixed;
   top: 50%;
@@ -119,9 +130,6 @@ body {
   border: 2px solid #222224;
   padding: 20px;
   z-index: 10;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .settings-modal label {
@@ -132,7 +140,6 @@ body {
 .settings-modal input {
   margin-left: 10px;
   padding: 5px;
-  width: calc(100% - 20px);
 }
 
 .settings-modal button {
