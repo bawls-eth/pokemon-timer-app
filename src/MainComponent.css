@@ -1,299 +1,236 @@
-/* MainComponent.css - Skin Themes and Global Styles */
+import React, { useState, useEffect, useRef } from "react";
+import "./MainComponent.css";
 
-/* General styles */
-body,
-html,
-.main-container {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: "Press Start 2P", sans-serif;
-  overflow: hidden;
-}
+function MainComponent() {
+  const [activePlayer, setActivePlayer] = useState(null);
+  const [player1Time, setPlayer1Time] = useState(20 * 60);
+  const [player2Time, setPlayer2Time] = useState(20 * 60);
+  const [upkeepTime, setUpkeepTime] = useState(30);
+  const [isUpkeepActive, setIsUpkeepActive] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [player1Name, setPlayer1Name] = useState("Player 1");
+  const [player2Name, setPlayer2Name] = useState("Player 2");
+  const [skin, setSkin] = useState("pikachu-theme");
 
-/* Skin variables */
-.pikachu-theme {
-  --bg-color: #FFCB05;
-  --text-color: #2F2F2F;
-  --accent-color: #E32636;
-}
+  const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
+  const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
+  const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
+  const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
-.charizard-theme {
-  --bg-color: #FF4500;
-  --text-color: #FFFFFF;
-  --accent-color: #FFD700;
-}
+  const playSound = (soundRef) => {
+    if (audioEnabled) {
+      soundRef.pause();
+      soundRef.currentTime = 0;
+      soundRef.play().catch((error) => console.error("Audio playback error:", error));
+    }
+  };
 
-.bulbasaur-theme {
-  --bg-color: #78C850;
-  --text-color: #2F4F2F;
-  --accent-color: #FF3E4D;
-}
+  const stopAllSounds = () => {
+    [startGameSound.current, lowHealthSound.current, victorySound.current, plinkSound.current].forEach((sound) => {
+      sound.pause();
+      sound.currentTime = 0;
+    });
+  };
 
-.squirtle-theme {
-  --bg-color: #00BFFF;
-  --text-color: #FFFFFF;
-  --accent-color: #A52A2A;
-}
+  useEffect(() => {
+    const savedSkin = localStorage.getItem("selectedSkin");
+    if (savedSkin) setSkin(savedSkin);
+  }, []);
 
-.jigglypuff-theme {
-  --bg-color: #FF69B4;
-  --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
-}
+  const handleSkinChange = (newSkin) => {
+    setSkin(newSkin);
+    localStorage.setItem("selectedSkin", newSkin);
+  };
 
-.meowth-theme {
-  --bg-color: #F5DEB3;
-  --text-color: #8B4513;
-  --accent-color: #B22222;
-}
+  useEffect(() => {
+    let interval;
+    if (gameStarted && activePlayer) {
+      interval = setInterval(() => {
+        if (activePlayer === 1) {
+          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : 0));
+        } else {
+          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : 0));
+        }
+      }, 1000);
 
-.gengar-theme {
-  --bg-color: #6A0DAD;
-  --text-color: #320043;
-  --accent-color: #FFFFFF;
-}
+      // Trigger low health sound for game timer (last 1 minute)
+      if (player1Time <= 60 || player2Time <= 60) {
+        playSound(lowHealthSound.current);
+      }
 
-.eevee-theme {
-  --bg-color: #D2B48C;
-  --text-color: #2F2F2F;
-  --accent-color: #FFFFFF;
-}
+      // Trigger victory sound when timer reaches 0
+      if (player1Time === 0 || player2Time === 0) {
+        stopAllSounds();
+        playSound(victorySound.current);
+        clearInterval(interval);
+      }
+    }
+    return () => clearInterval(interval);
+  }, [gameStarted, activePlayer, player1Time, player2Time]);
 
-.snorlax-theme {
-  --bg-color: #2E8B57;
-  --text-color: #FFFACD;
-  --accent-color: #2F2F2F;
-}
+  useEffect(() => {
+    let interval;
+    if (isUpkeepActive) {
+      interval = setInterval(() => {
+        setUpkeepTime((prev) => {
+          if (prev <= 10 && prev > 0) {
+            playSound(lowHealthSound.current);
+          }
+          if (prev <= 1) {
+            setIsUpkeepActive(false);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
-.dragonite-theme {
-  --bg-color: #FFA500;
-  --text-color: #4682B4;
-  --accent-color: #FFF5EE;
-}
+      return () => clearInterval(interval);
+    }
+  }, [isUpkeepActive]);
 
-.lapras-theme {
-  --bg-color: #6495ED;
-  --text-color: #FFFFFF;
-  --accent-color: #ADD8E6;
-}
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
-.umbreon-theme {
-  --bg-color: #000000;
-  --text-color: #FFD700;
-  --accent-color: #1E90FF;
-}
+  const startGame = (player) => {
+    setGameStarted(true);
+    setActivePlayer(player);
+    setPlayer1Time(20 * 60);
+    setPlayer2Time(20 * 60);
+    playSound(startGameSound.current);
+  };
 
-.espeon-theme {
-  --bg-color: #9370DB;
-  --text-color: #8A2BE2;
-  --accent-color: #DC143C;
-}
+  const passTurn = () => {
+    playSound(plinkSound.current);
+    setIsUpkeepActive(false);
+    setUpkeepTime(30);
+    setActivePlayer((prev) => (prev === 1 ? 2 : 1));
+  };
 
-.lucario-theme {
-  --bg-color: #1E90FF;
-  --text-color: #000000;
-  --accent-color: #FFD700;
-}
+  const toggleUpkeep = () => {
+    if (isUpkeepActive) {
+      playSound(plinkSound.current);
+      setIsUpkeepActive(false);
+      setUpkeepTime(30);
+    } else {
+      playSound(plinkSound.current);
+      setIsUpkeepActive(true);
+    }
+  };
 
-.togepi-theme {
-  --bg-color: #FFFFFF;
-  --text-color: #FF0000;
-  --accent-color: #0000FF;
-}
+  const resetGame = () => {
+    playSound(plinkSound.current);
+    stopAllSounds();
+    setGameStarted(false);
+    setPlayer1Time(20 * 60);
+    setPlayer2Time(20 * 60);
+    setUpkeepTime(30);
+    setIsUpkeepActive(false);
+  };
 
-.machamp-theme {
-  --bg-color: #808080;
-  --text-color: #FFD700;
-  --accent-color: #DC143C;
-}
+  const toggleAudio = () => {
+    setAudioEnabled(!audioEnabled);
+    stopAllSounds();
+  };
 
-.mewtwo-theme {
-  --bg-color: #9370DB;
-  --text-color: #D3D3D3;
-  --accent-color: #87CEEB;
-}
+  const saveSettings = () => {
+    setShowSettings(false);
+  };
 
-.mew-theme {
-  --bg-color: #FFC0CB;
-  --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
-}
-
-.psyduck-theme {
-  --bg-color: #FFFF00;
-  --text-color: #000000;
-  --accent-color: #87CEEB;
-}
-
-.arcanine-theme {
-  --bg-color: #FFA500;
-  --text-color: #000000;
-  --accent-color: #FFF5EE;
-}
-
-.articuno-theme {
-  --bg-color: #AFEEEE;
-  --text-color: #4682B4;
-  --accent-color: #FFFFFF;
-}
-
-.zapdos-theme {
-  --bg-color: #FFD700;
-  --text-color: #000000;
-  --accent-color: #FFA500;
-}
-
-.moltres-theme {
-  --bg-color: #FF4500;
-  --text-color: #FF8C00;
-  --accent-color: #FFD700;
-}
-
-.raichu-theme {
-  --bg-color: #FF8C00;
-  --text-color: #8B4513;
-  --accent-color: #FFD700;
-}
-
-.lugia-theme {
-  --bg-color: #FFFFFF;
-  --text-color: #0000FF;
-  --accent-color: #ADD8E6;
-}
-
-/* General usage of CSS variables */
-body,
-.main-container {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-}
-
-button {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: 2px solid var(--text-color);
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: var(--text-color);
-  color: var(--accent-color);
-}
-
-/* Fix Pass Turn button alignment */
-.circle-button {
-  width: 150px;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  font-size: 1rem;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: 2px solid var(--text-color);
-  margin: 20px auto; /* Center alignment */
-  transition: all 0.3s ease-in-out;
-}
-
-.circle-button:hover {
-  background-color: var(--text-color);
-  color: var(--accent-color);
-}
-
-/* Game timer and player name sizes */
-.player-timer h2 {
-  font-size: 1.2rem; /* Smaller font size for player name */
-  margin: 5px 0;
-}
-
-.player-timer p {
-  font-size: 2rem; /* Larger font size for game timer */
-  margin: 5px 0;
-}
-
-/* Small pause button */
-.pause-button {
-  display: block;
-  margin: 10px auto;
-  padding: 10px 20px;
-  font-size: 0.9rem;
-  border-radius: 5px;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: 2px solid var(--text-color);
-  transition: all 0.3s ease-in-out;
-}
-
-.pause-button:hover {
-  background-color: var(--text-color);
-  color: var(--accent-color);
-}
-
-/* Separate Start Upkeep from other buttons */
-.square-button {
-  display: block;
-  margin: 20px auto;
-  padding: 15px 30px;
-  font-size: 1rem;
-  border-radius: 5px;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: 2px solid var(--text-color);
-  transition: all 0.3s ease-in-out;
-}
-
-.square-button:hover {
-  background-color: var(--text-color);
-  color: var(--accent-color);
-}
-
-.control-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 30px;
-}
-
-.control-buttons button {
-  margin: 10px 0;
-  padding: 10px 20px;
-  font-size: 1rem;
-}
-
-/* Settings modal for mobile scrolling */
-.settings-modal {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 20px;
-  background-color: var(--bg-color);
-  border: 2px solid var(--text-color);
-  border-radius: 15px 15px 0 0;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  margin: 0;
-}
-
-.settings-modal label {
-  display: block;
-  margin: 10px 0;
-}
-
-.settings-modal select,
-.settings-modal input {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin: 5px 0;
-}
+  return (
+    <div className={`main-container ${skin}`}>
+      <h1 className="header">Pokémon TCG Timer</h1>
+      {!gameStarted ? (
+        <div className="start-buttons">
+          <button onClick={() => startGame(1)}>Start Game</button>
+        </div>
+      ) : (
+        <div>
+          <div className="player-timer player1">
+            <h2>{player1Name}</h2>
+            <p>{formatTime(player1Time)}</p>
+          </div>
+          <div className="circle-button" onClick={passTurn}>
+            <p className={`upkeep-timer ${upkeepTime <= 10 ? "critical" : ""}`}>
+              {isUpkeepActive ? formatTime(upkeepTime) : "Pass Turn"}
+            </p>
+          </div>
+          <div className="player-timer player2">
+            <h2>{player2Name}</h2>
+            <p>{formatTime(player2Time)}</p>
+          </div>
+          <button className="square-button" onClick={toggleUpkeep}>
+            {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
+          </button>
+          <div className="control-buttons">
+            <button className="pause-button" onClick={() => playSound(plinkSound.current)}>
+              Pause Game
+            </button>
+            <button onClick={resetGame}>Reset Game</button>
+            <button onClick={toggleAudio}>
+              {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
+            </button>
+            <button onClick={() => {
+              playSound(plinkSound.current);
+              setShowSettings(true);
+            }}>⚙️ Settings</button>
+          </div>
+        </div>
+      )}
+      {showSettings && (
+        <div className="settings-modal">
+          <h2>Settings</h2>
+          <label>
+            Player 1 Name:
+            <input
+              type="text"
+              value={player1Name}
+              onChange={(e) => setPlayer1Name(e.target.value)}
+            />
+          </label>
+          <label>
+            Player 2 Name:
+            <input
+              type="text"
+              value={player2Name}
+              onChange={(e) => setPlayer2Name(e.target.value)}
+            />
+          </label>
+          <label>
+            Game Timer (minutes):
+            <input
+              type="number"
+              value={Math.floor(player1Time / 60)}
+              onChange={(e) => {
+                setPlayer1Time(e.target.value * 60);
+                setPlayer2Time(e.target.value * 60);
+              }}
+            />
+          </label>
+          <label>
+            Upkeep Timer (seconds):
+            <input
+              type="number"
+              value={upkeepTime}
+              onChange={(e) => setUpkeepTime(e.target.value)}
+            />
+          </label>
+          <label>
+            Choose a Skin:
+            <select value={skin} onChange={(e) => handleSkinChange(e.target.value)}>
+              <option value="pikachu-theme">Pikachu</option>
+              <option value="charizard-theme">Charizard</option>
+              <option value="bulbasaur-theme">Bulbasaur</option>
+              <option value="squirtle-theme">Squirtle</option>
+              <option value="jigglypuff-theme">Jigglypuff</option>
+              <option value="meowth-theme">Meowth</option>
+              <option value="gengar-theme">Gengar</option>
+              <option value="eevee-theme">Eevee</option>
+              <option value="snorlax-theme">Snorlax</option>
+              <option value="dragonite-theme">Dragonite</option>
+              <option value="lapras-theme">Lapras</option>
+              <option value="umbreon-theme">Umbreon</option>
