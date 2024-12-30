@@ -49,9 +49,27 @@ function MainComponent() {
     if (gameStarted && activePlayer) {
       interval = setInterval(() => {
         if (activePlayer === 1) {
-          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : 0));
+          setPlayer1Time((prev) => {
+            if (prev <= 60 && prev > 0) {
+              playSound(lowHealthSound.current);
+            }
+            if (prev === 0) {
+              playSound(victorySound.current);
+              clearInterval(interval);
+            }
+            return prev > 0 ? prev - 1 : 0;
+          });
         } else {
-          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : 0));
+          setPlayer2Time((prev) => {
+            if (prev <= 60 && prev > 0) {
+              playSound(lowHealthSound.current);
+            }
+            if (prev === 0) {
+              playSound(victorySound.current);
+              clearInterval(interval);
+            }
+            return prev > 0 ? prev - 1 : 0;
+          });
         }
       }, 1000);
     }
@@ -63,7 +81,7 @@ function MainComponent() {
     if (isUpkeepActive) {
       interval = setInterval(() => {
         setUpkeepTime((prev) => {
-          if (prev <= 10 && prev > 0) {
+          if (prev === 10) {
             playSound(lowHealthSound.current);
           }
           if (prev <= 1) {
@@ -100,13 +118,10 @@ function MainComponent() {
   };
 
   const toggleUpkeep = () => {
-    if (isUpkeepActive) {
-      playSound(plinkSound.current);
-      setIsUpkeepActive(false);
+    playSound(plinkSound.current);
+    setIsUpkeepActive(!isUpkeepActive);
+    if (!isUpkeepActive) {
       setUpkeepTime(30);
-    } else {
-      playSound(plinkSound.current);
-      setIsUpkeepActive(true);
     }
   };
 
@@ -126,6 +141,7 @@ function MainComponent() {
   };
 
   const saveSettings = () => {
+    playSound(plinkSound.current);
     setShowSettings(false);
   };
 
@@ -159,7 +175,7 @@ function MainComponent() {
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
             </button>
-            <button onClick={() => setShowSettings(true)}>⚙️ Settings</button>
+            <button onClick={() => { setShowSettings(true); playSound(plinkSound.current); }}>⚙️ Settings</button>
           </div>
         </div>
       )}
@@ -239,4 +255,3 @@ function MainComponent() {
 }
 
 export default MainComponent;
-
