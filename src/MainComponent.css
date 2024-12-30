@@ -3,13 +3,14 @@
   --red-2: #f00000;
   --dark-gray: #222224;
   --light-gray: #f0f0f0;
+  --white: #ffffff;
 }
 
 .main-container {
   font-family: "Press Start 2P", sans-serif;
   text-align: center;
-  background: var(--red-1);
-  color: var(--light-gray);
+  background: var(--light-gray); /* Background is now white */
+  color: var(--dark-gray);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -37,38 +38,40 @@
   height: 150px;
   margin: 20px auto;
   border-radius: 50%;
-  background: var(--dark-gray);
-  color: var(--light-gray);
+  background: var(--white); /* White background */
+  color: var(--dark-gray); /* Black text */
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 2px 2px 5px var(--light-gray);
-  transition: transform 0.3s, background-color 0.3s;
+  border: 2px solid var(--dark-gray); /* Black outline */
+  box-shadow: 2px 2px 5px var(--red-1); /* Subtle red shadow for accents */
+  transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
 .circle-button:hover {
   transform: scale(1.1);
-  background-color: var(--red-2);
+  background-color: var(--red-1); /* Red hover background */
+  color: var(--white); /* White text on hover */
 }
 
 .upkeep-timer {
   font-size: 1rem;
-  color: var(--light-gray);
+  color: var(--dark-gray); /* Consistent with text color */
 }
 
 .control-buttons button {
   margin: 10px;
   padding: 10px 20px;
   border-radius: 5px;
-  background-color: var(--red-2);
-  color: var(--light-gray);
+  background-color: var(--red-2); /* Red for buttons */
+  color: var(--light-gray); /* White text */
   cursor: pointer;
   border: none;
   transition: background-color 0.3s;
 }
 
 .control-buttons button:hover {
-  background-color: var(--dark-gray);
+  background-color: var(--dark-gray); /* Black hover effect */
 }
