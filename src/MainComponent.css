@@ -1,16 +1,8 @@
-:root {
-  --red-1: #ee1515;
-  --red-2: #f00000;
-  --dark-gray: #222224;
-  --light-gray: #f0f0f0;
-  --white: #ffffff;
-}
-
 .main-container {
   font-family: "Press Start 2P", sans-serif;
   text-align: center;
-  background: var(--light-gray); /* Background is now white */
-  color: var(--dark-gray);
+  background: #f0f0f0;
+  color: #222224;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -21,16 +13,12 @@
 .header {
   font-size: 2rem;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 5px var(--red-2);
-}
-
-.player-timer {
-  margin: 20px 0;
+  text-shadow: 2px 2px 5px #f00000;
 }
 
 .player-timer h2 {
   font-size: 1.5rem;
-  color: var(--red-2);
+  color: #f00000;
 }
 
 .circle-button {
@@ -38,40 +26,53 @@
   height: 150px;
   margin: 20px auto;
   border-radius: 50%;
-  background: var(--white); /* White background */
-  color: var(--dark-gray); /* Black text */
+  background: #ffffff;
+  color: #222224;
   font-size: 1.2rem;
+  border: 2px solid #222224;
+  box-shadow: 2px 2px 5px #ee1515;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  border: 2px solid var(--dark-gray); /* Black outline */
-  box-shadow: 2px 2px 5px var(--red-1); /* Subtle red shadow for accents */
   transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
 .circle-button:hover {
-  transform: scale(1.1);
-  background-color: var(--red-1); /* Red hover background */
-  color: var(--white); /* White text on hover */
+  background-color: #f00000;
+  color: #ffffff;
 }
 
-.upkeep-timer {
-  font-size: 1rem;
-  color: var(--dark-gray); /* Consistent with text color */
+.settings-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border: 2px solid #222224;
+  padding: 20px;
+  z-index: 10;
 }
 
-.control-buttons button {
-  margin: 10px;
+.settings-modal label {
+  display: block;
+  margin: 10px 0;
+}
+
+.settings-modal input {
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.settings-modal button {
+  margin-top: 20px;
   padding: 10px 20px;
-  border-radius: 5px;
-  background-color: var(--red-2); /* Red for buttons */
-  color: var(--light-gray); /* White text */
-  cursor: pointer;
+  background: #f00000;
+  color: #ffffff;
   border: none;
-  transition: background-color 0.3s;
+  cursor: pointer;
 }
 
-.control-buttons button:hover {
-  background-color: var(--dark-gray); /* Black hover effect */
+.settings-modal button:hover {
+  background: #ee1515;
 }

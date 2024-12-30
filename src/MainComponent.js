@@ -9,23 +9,24 @@ function MainComponent() {
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [player1Name, setPlayer1Name] = useState("Player 1");
+  const [player2Name, setPlayer2Name] = useState("Player 2");
 
-  // Audio Refs
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
   const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
   const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
   const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
-  // Function to play a sound
   const playSound = (soundRef) => {
     if (audioEnabled) {
+      stopAllSounds();
       soundRef.pause();
       soundRef.currentTime = 0;
       soundRef.play().catch((error) => console.error("Audio playback error:", error));
     }
   };
 
-  // Stop all sounds
   const stopAllSounds = () => {
     [startGameSound.current, lowHealthSound.current, victorySound.current, plinkSound.current].forEach((sound) => {
       sound.pause();
@@ -33,7 +34,6 @@ function MainComponent() {
     });
   };
 
-  // Timer Logic
   useEffect(() => {
     let interval;
     if (gameStarted && activePlayer) {
@@ -49,14 +49,20 @@ function MainComponent() {
   }, [gameStarted, activePlayer]);
 
   useEffect(() => {
-    if (isUpkeepActive && upkeepTime <= 10) {
-      playSound(lowHealthSound.current);
+    if (isUpkeepActive) {
+      const interval = setInterval(() => {
+        setUpkeepTime((prev) => {
+          if (prev <= 1) {
+            setIsUpkeepActive(false);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
     }
-    if (isUpkeepActive && upkeepTime === 0) {
-      setIsUpkeepActive(false);
-      setUpkeepTime(30);
-    }
-  }, [isUpkeepActive, upkeepTime]);
+  }, [isUpkeepActive]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -73,7 +79,6 @@ function MainComponent() {
   };
 
   const passTurn = () => {
-    stopAllSounds();
     playSound(plinkSound.current);
     setIsUpkeepActive(false);
     setUpkeepTime(30);
@@ -81,15 +86,14 @@ function MainComponent() {
   };
 
   const resetUpkeep = () => {
+    playSound(plinkSound.current);
     setIsUpkeepActive(false);
     setUpkeepTime(30);
-    playSound(plinkSound.current);
-    stopAllSounds();
   };
 
   const resetGame = () => {
-    stopAllSounds();
     playSound(plinkSound.current);
+    stopAllSounds();
     setGameStarted(false);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
@@ -99,6 +103,10 @@ function MainComponent() {
   const toggleAudio = () => {
     setAudioEnabled(!audioEnabled);
     stopAllSounds();
+  };
+
+  const saveSettings = () => {
+    setShowSettings(false);
   };
 
   return (
@@ -111,7 +119,7 @@ function MainComponent() {
       ) : (
         <div>
           <div className="player-timer player1">
-            <h2>Player 1</h2>
+            <h2>{player1Name}</h2>
             <p>{formatTime(player1Time)}</p>
           </div>
           <div className="circle-button" onClick={passTurn}>
@@ -120,7 +128,7 @@ function MainComponent() {
             </p>
           </div>
           <div className="player-timer player2">
-            <h2>Player 2</h2>
+            <h2>{player2Name}</h2>
             <p>{formatTime(player2Time)}</p>
           </div>
           <div className="control-buttons">
@@ -130,7 +138,49 @@ function MainComponent() {
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
             </button>
+            <button onClick={() => setShowSettings(true)}>⚙️ Settings</button>
           </div>
+        </div>
+      )}
+      {showSettings && (
+        <div className="settings-modal">
+          <h2>Settings</h2>
+          <label>
+            Player 1 Name:
+            <input
+              type="text"
+              value={player1Name}
+              onChange={(e) => setPlayer1Name(e.target.value)}
+            />
+          </label>
+          <label>
+            Player 2 Name:
+            <input
+              type="text"
+              value={player2Name}
+              onChange={(e) => setPlayer2Name(e.target.value)}
+            />
+          </label>
+          <label>
+            Game Timer (minutes):
+            <input
+              type="number"
+              value={Math.floor(player1Time / 60)}
+              onChange={(e) => {
+                setPlayer1Time(e.target.value * 60);
+                setPlayer2Time(e.target.value * 60);
+              }}
+            />
+          </label>
+          <label>
+            Upkeep Timer (seconds):
+            <input
+              type="number"
+              value={upkeepTime}
+              onChange={(e) => setUpkeepTime(e.target.value)}
+            />
+          </label>
+          <button onClick={saveSettings}>Save</button>
         </div>
       )}
     </div>
