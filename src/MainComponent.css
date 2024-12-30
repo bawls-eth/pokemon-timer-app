@@ -1,25 +1,26 @@
 :root {
-  --pokemon-yellow: #FFCB05;
-  --pokemon-blue: #3D7DCA;
-  --pokemon-navy: #003A70;
+  --red-1: #ee1515;
+  --red-2: #f00000;
+  --dark-gray: #222224;
+  --light-gray: #f0f0f0;
 }
 
 .main-container {
   font-family: "Press Start 2P", sans-serif;
   text-align: center;
-  background: var(--pokemon-yellow);
-  color: var(--pokemon-navy);
+  background: var(--light-gray);
+  color: var(--dark-gray);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   padding: 20px;
 }
 
 .header {
   font-size: 2rem;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 5px var(--pokemon-blue);
+  text-shadow: 2px 2px 5px var(--red-1);
 }
 
 .player-timer {
@@ -28,7 +29,7 @@
 
 .player-timer h2 {
   font-size: 1.5rem;
-  color: var(--pokemon-blue);
+  color: var(--red-1);
 }
 
 .circle-button {
@@ -36,38 +37,47 @@
   height: 150px;
   margin: 20px auto;
   border-radius: 50%;
-  background: var(--pokemon-blue);
-  color: var(--pokemon-yellow);
+  background: var(--red-2);
+  color: var(--light-gray);
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 2px 2px 5px var(--pokemon-navy);
+  box-shadow: 2px 2px 5px var(--dark-gray);
   transition: transform 0.3s, background-color 0.3s;
 }
 
 .circle-button:hover {
   transform: scale(1.1);
-  background-color: var(--pokemon-navy);
+  background-color: var(--red-1);
 }
 
-.upkeep-timer {
-  font-size: 1rem;
-  color: var(--pokemon-yellow);
+.upkeep-active {
+  animation: flash 1s infinite;
+  color: var(--red-1);
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .control-buttons button {
   margin: 10px;
   padding: 10px 20px;
   border-radius: 5px;
-  background-color: var(--pokemon-navy);
-  color: var(--pokemon-yellow);
+  background-color: var(--dark-gray);
+  color: var(--light-gray);
   cursor: pointer;
   border: none;
   transition: background-color 0.3s;
 }
 
 .control-buttons button:hover {
-  background-color: var(--pokemon-blue);
+  background-color: var(--red-2);
 }
