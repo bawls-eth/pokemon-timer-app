@@ -51,7 +51,7 @@ function MainComponent() {
         if (activePlayer === 1) {
           setPlayer1Time((prev) => {
             if (prev <= 60 && prev > 0) {
-              playSound(lowHealthSound.current);
+              if (lowHealthSound.current.paused) playSound(lowHealthSound.current);
             }
             if (prev === 0) {
               playSound(victorySound.current);
@@ -62,7 +62,7 @@ function MainComponent() {
         } else {
           setPlayer2Time((prev) => {
             if (prev <= 60 && prev > 0) {
-              playSound(lowHealthSound.current);
+              if (lowHealthSound.current.paused) playSound(lowHealthSound.current);
             }
             if (prev === 0) {
               playSound(victorySound.current);
