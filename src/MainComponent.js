@@ -6,6 +6,7 @@ function MainComponent() {
   const [player1Time, setPlayer1Time] = useState(20 * 60);
   const [player2Time, setPlayer2Time] = useState(20 * 60);
   const [upkeepTime, setUpkeepTime] = useState(30);
+  const [savedUpkeepTime, setSavedUpkeepTime] = useState(30);
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -37,6 +38,9 @@ function MainComponent() {
   useEffect(() => {
     const savedSkin = localStorage.getItem("selectedSkin");
     if (savedSkin) setSkin(savedSkin);
+
+    const savedUpkeep = localStorage.getItem("savedUpkeepTime");
+    if (savedUpkeep) setSavedUpkeepTime(Number(savedUpkeep));
   }, []);
 
   const handleSkinChange = (newSkin) => {
@@ -86,7 +90,7 @@ function MainComponent() {
           }
           if (prev <= 1) {
             setIsUpkeepActive(false);
-            return 30;
+            return savedUpkeepTime;
           }
           return prev - 1;
         });
@@ -94,7 +98,7 @@ function MainComponent() {
 
       return () => clearInterval(interval);
     }
-  }, [isUpkeepActive]);
+  }, [isUpkeepActive, savedUpkeepTime]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -115,7 +119,7 @@ function MainComponent() {
     setIsUpkeepActive(false);
     lowHealthSound.current.pause();
     lowHealthSound.current.currentTime = 0;
-    setUpkeepTime(30);
+    setUpkeepTime(savedUpkeepTime);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
   };
 
@@ -125,7 +129,7 @@ function MainComponent() {
       lowHealthSound.current.pause();
       lowHealthSound.current.currentTime = 0;
       setIsUpkeepActive(false);
-      setUpkeepTime(30);
+      setUpkeepTime(savedUpkeepTime);
     } else {
       setIsUpkeepActive(true);
     }
@@ -137,7 +141,7 @@ function MainComponent() {
     setGameStarted(false);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
-    setUpkeepTime(30);
+    setUpkeepTime(savedUpkeepTime);
     setIsUpkeepActive(false);
   };
 
@@ -149,6 +153,8 @@ function MainComponent() {
   const saveSettings = () => {
     playSound(plinkSound.current);
     setShowSettings(false);
+    setSavedUpkeepTime(upkeepTime);
+    localStorage.setItem("savedUpkeepTime", upkeepTime);
   };
 
   return (
