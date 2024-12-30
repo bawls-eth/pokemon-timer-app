@@ -10,25 +10,30 @@ function MainComponent() {
   const [gameStarted, setGameStarted] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
 
-  const startGameSound = useRef(new Audio("/sounds/battle.mp3"));
-  const lowHealthSound = useRef(new Audio("/sounds/low-health.mp3"));
-  const victorySound = useRef(new Audio("/sounds/victory.mp3"));
+  // Audio Refs
+  const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
+  const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
+  const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
+  const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
-  const playSound = (sound) => {
+  // Function to play a sound
+  const playSound = (soundRef) => {
     if (audioEnabled) {
-      sound.pause();
-      sound.currentTime = 0;
-      sound.play().catch((e) => console.error("Sound failed:", e));
+      soundRef.pause();
+      soundRef.currentTime = 0;
+      soundRef.play().catch((error) => console.error("Audio playback error:", error));
     }
   };
 
+  // Stop all sounds
   const stopAllSounds = () => {
-    [startGameSound, lowHealthSound, victorySound].forEach((soundRef) => {
-      soundRef.pause();
-      soundRef.currentTime = 0;
+    [startGameSound.current, lowHealthSound.current, victorySound.current, plinkSound.current].forEach((sound) => {
+      sound.pause();
+      sound.currentTime = 0;
     });
   };
 
+  // Timer Logic
   useEffect(() => {
     let interval;
     if (gameStarted && activePlayer) {
@@ -44,20 +49,14 @@ function MainComponent() {
   }, [gameStarted, activePlayer]);
 
   useEffect(() => {
-    if (isUpkeepActive) {
-      const interval = setInterval(() => {
-        setUpkeepTime((prev) => {
-          if (prev <= 1) {
-            setIsUpkeepActive(false);
-            return 30;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
+    if (isUpkeepActive && upkeepTime <= 10) {
+      playSound(lowHealthSound.current);
     }
-  }, [isUpkeepActive]);
+    if (isUpkeepActive && upkeepTime === 0) {
+      setIsUpkeepActive(false);
+      setUpkeepTime(30);
+    }
+  }, [isUpkeepActive, upkeepTime]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -75,6 +74,7 @@ function MainComponent() {
 
   const passTurn = () => {
     stopAllSounds();
+    playSound(plinkSound.current);
     setIsUpkeepActive(false);
     setUpkeepTime(30);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
@@ -83,11 +83,13 @@ function MainComponent() {
   const resetUpkeep = () => {
     setIsUpkeepActive(false);
     setUpkeepTime(30);
+    playSound(plinkSound.current);
     stopAllSounds();
   };
 
   const resetGame = () => {
     stopAllSounds();
+    playSound(plinkSound.current);
     setGameStarted(false);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
@@ -110,9 +112,7 @@ function MainComponent() {
         <div>
           <div className="player-timer player1">
             <h2>Player 1</h2>
-            <p className={player1Time <= 10 ? "critical" : ""}>
-              {formatTime(player1Time)}
-            </p>
+            <p>{formatTime(player1Time)}</p>
           </div>
           <div className="circle-button" onClick={passTurn}>
             <p className="upkeep-timer">
@@ -121,12 +121,10 @@ function MainComponent() {
           </div>
           <div className="player-timer player2">
             <h2>Player 2</h2>
-            <p className={player2Time <= 10 ? "critical" : ""}>
-              {formatTime(player2Time)}
-            </p>
+            <p>{formatTime(player2Time)}</p>
           </div>
           <div className="control-buttons">
-            <button onClick={() => setIsUpkeepActive(true)}>Start Upkeep</button>
+            <button onClick={() => { setIsUpkeepActive(true); playSound(plinkSound.current); }}>Start Upkeep</button>
             <button onClick={resetUpkeep}>Reset Upkeep</button>
             <button onClick={resetGame}>Reset Game</button>
             <button onClick={toggleAudio}>
