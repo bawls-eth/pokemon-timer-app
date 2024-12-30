@@ -1,4 +1,4 @@
-/* MainComponent.css - Skin Themes and Global Styles */
+/* MainComponent.css - Retro Style Enhancements */
 
 /* General styles */
 body,
@@ -13,180 +13,122 @@ html,
   justify-content: center;
   align-items: center;
   font-family: "Press Start 2P", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   overflow: hidden;
 }
 
-/* Skin variables */
-.pikachu-theme {
-  --bg-color: #FFCB05;
-  --text-color: #2F2F2F;
-  --accent-color: #E32636;
+/* Header styles */
+.header {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px var(--accent-color);
 }
 
-.charizard-theme {
-  --bg-color: #FF4500;
-  --text-color: #FFFFFF;
-  --accent-color: #FFD700;
-}
-
-.bulbasaur-theme {
-  --bg-color: #78C850;
-  --text-color: #2F4F2F;
-  --accent-color: #FF3E4D;
-}
-
-.squirtle-theme {
-  --bg-color: #00BFFF;
-  --text-color: #FFFFFF;
-  --accent-color: #A52A2A;
-}
-
-.jigglypuff-theme {
-  --bg-color: #FF69B4;
-  --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
-}
-
-.meowth-theme {
-  --bg-color: #F5DEB3;
-  --text-color: #8B4513;
-  --accent-color: #B22222;
-}
-
-.gengar-theme {
-  --bg-color: #6A0DAD;
-  --text-color: #320043;
-  --accent-color: #FFFFFF;
-}
-
-.eevee-theme {
-  --bg-color: #D2B48C;
-  --text-color: #2F2F2F;
-  --accent-color: #FFFFFF;
-}
-
-.snorlax-theme {
-  --bg-color: #2E8B57;
-  --text-color: #FFFACD;
-  --accent-color: #2F2F2F;
-}
-
-.dragonite-theme {
-  --bg-color: #FFA500;
-  --text-color: #4682B4;
-  --accent-color: #FFF5EE;
-}
-
-.lapras-theme {
-  --bg-color: #6495ED;
-  --text-color: #FFFFFF;
-  --accent-color: #ADD8E6;
-}
-
-.umbreon-theme {
-  --bg-color: #000000;
-  --text-color: #FFD700;
-  --accent-color: #1E90FF;
-}
-
-.espeon-theme {
-  --bg-color: #9370DB;
-  --text-color: #8A2BE2;
-  --accent-color: #DC143C;
-}
-
-.lucario-theme {
-  --bg-color: #1E90FF;
-  --text-color: #000000;
-  --accent-color: #FFD700;
-}
-
-.togepi-theme {
-  --bg-color: #FFFFFF;
-  --text-color: #FF0000;
-  --accent-color: #0000FF;
-}
-
-.machamp-theme {
-  --bg-color: #808080;
-  --text-color: #FFD700;
-  --accent-color: #DC143C;
-}
-
-.mewtwo-theme {
-  --bg-color: #9370DB;
-  --text-color: #D3D3D3;
-  --accent-color: #87CEEB;
-}
-
-.mew-theme {
-  --bg-color: #FFC0CB;
-  --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
-}
-
-.psyduck-theme {
-  --bg-color: #FFFF00;
-  --text-color: #000000;
-  --accent-color: #87CEEB;
-}
-
-.arcanine-theme {
-  --bg-color: #FFA500;
-  --text-color: #000000;
-  --accent-color: #FFF5EE;
-}
-
-.articuno-theme {
-  --bg-color: #AFEEEE;
-  --text-color: #4682B4;
-  --accent-color: #FFFFFF;
-}
-
-.zapdos-theme {
-  --bg-color: #FFD700;
-  --text-color: #000000;
-  --accent-color: #FFA500;
-}
-
-.moltres-theme {
-  --bg-color: #FF4500;
-  --text-color: #FF8C00;
-  --accent-color: #FFD700;
-}
-
-.raichu-theme {
-  --bg-color: #FF8C00;
-  --text-color: #8B4513;
-  --accent-color: #FFD700;
-}
-
-.lugia-theme {
-  --bg-color: #FFFFFF;
-  --text-color: #0000FF;
-  --accent-color: #ADD8E6;
-}
-
-/* General usage of CSS variables */
-body,
-.main-container {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-}
-
+/* Button styles */
 button {
   background-color: var(--accent-color);
   color: var(--text-color);
   border: 2px solid var(--text-color);
-  padding: 10px 20px;
+  border-radius: 10px;
+  padding: 15px 25px;
   font-size: 1rem;
   font-family: inherit;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: 0 5px var(--text-color);
+}
+
+button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px var(--text-color);
 }
 
 button:hover {
   background-color: var(--text-color);
   color: var(--accent-color);
+}
+
+.start-button {
+  margin-top: 20px;
+}
+
+.action-button,
+.reset-button {
+  margin: 10px;
+}
+
+/* Timer styles */
+.player-timers {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin: 20px 0;
+}
+
+.player-timers p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* Settings styles */
+.settings {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--bg-color);
+  border: 2px solid var(--text-color);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.settings-item {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.settings-item label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.settings-item select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid var(--text-color);
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.settings-item select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header {
+    font-size: 1.2rem;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .player-timers {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .player-timers p {
+    margin-bottom: 10px;
+  }
+
+  .settings {
+    width: 95%;
+  }
 }

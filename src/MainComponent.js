@@ -15,18 +15,27 @@ const MainComponent = () => {
   const [skin, setSkin] = useState("pikachu-theme");
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
+  const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
   const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
   const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
-  const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
   useEffect(() => {
     const savedSkin = localStorage.getItem("selectedSkin");
     if (savedSkin) setSkin(savedSkin);
   }, []);
 
+  const playSound = (sound) => {
+    if (audioEnabled) {
+      sound.pause();
+      sound.currentTime = 0;
+      sound.play().catch((err) => console.error("Audio Error:", err));
+    }
+  };
+
   const handleSkinChange = (newSkin) => {
     setSkin(newSkin);
     localStorage.setItem("selectedSkin", newSkin);
+    playSound(plinkSound.current);
   };
 
   const startGame = (player) => {
@@ -34,12 +43,23 @@ const MainComponent = () => {
     setActivePlayer(player);
     setPlayer1Time(20 * 60);
     setPlayer2Time(20 * 60);
+    playSound(startGameSound.current);
   };
 
   const passTurn = () => {
     setIsUpkeepActive(false);
     setUpkeepTime(30);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
+    playSound(plinkSound.current);
+  };
+
+  const resetGame = () => {
+    setGameStarted(false);
+    setPlayer1Time(20 * 60);
+    setPlayer2Time(20 * 60);
+    setUpkeepTime(30);
+    setIsUpkeepActive(false);
+    playSound(victorySound.current);
   };
 
   return (
@@ -57,6 +77,9 @@ const MainComponent = () => {
           </div>
           <button className="action-button" onClick={passTurn}>
             Pass Turn
+          </button>
+          <button className="reset-button" onClick={resetGame}>
+            Reset Game
           </button>
         </div>
       )}
