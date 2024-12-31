@@ -18,69 +18,69 @@ html,
 
 /* Skin variables */
 .pikachu-theme {
-  --bg-color: #FFCB05;
+  --bg-color: #F8D030;
   --text-color: #2F2F2F;
-  --accent-color: #E32636;
+  --accent-color: #E03030;
 }
 
 .charizard-theme {
-  --bg-color: #FF4500;
+  --bg-color: #F08030;
   --text-color: #FFFFFF;
-  --accent-color: #FFD700;
+  --accent-color: #5490F0;
 }
 
 .bulbasaur-theme {
-  --bg-color: #78C850;
+  --bg-color: #A2DDA2;
   --text-color: #2F4F2F;
-  --accent-color: #FF3E4D;
+  --accent-color: #7FC08A;
 }
 
 .squirtle-theme {
-  --bg-color: #00BFFF;
+  --bg-color: #9DB7F5;
   --text-color: #FFFFFF;
-  --accent-color: #A52A2A;
+  --accent-color: #E3D5A9;
 }
 
 .jigglypuff-theme {
-  --bg-color: #FF69B4;
+  --bg-color: #F8A8D0;
   --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
+  --accent-color: #A030A0;
 }
 
 .meowth-theme {
-  --bg-color: #F5DEB3;
+  --bg-color: #E8D8A0;
   --text-color: #8B4513;
-  --accent-color: #B22222;
+  --accent-color: #A06038;
 }
 
 .gengar-theme {
-  --bg-color: #6A0DAD;
-  --text-color: #320043;
-  --accent-color: #FFFFFF;
+  --bg-color: #5C3E78;
+  --text-color: #FFFFFF;
+  --accent-color: #F03030;
 }
 
 .eevee-theme {
-  --bg-color: #D2B48C;
+  --bg-color: #C08958;
   --text-color: #2F2F2F;
-  --accent-color: #FFFFFF;
+  --accent-color: #F0E0C0;
 }
 
 .snorlax-theme {
-  --bg-color: #2E8B57;
+  --bg-color: #324F4F;
   --text-color: #FFFACD;
-  --accent-color: #2F2F2F;
+  --accent-color: #F0E8C8;
 }
 
 .dragonite-theme {
-  --bg-color: #FFA500;
+  --bg-color: #F0B058;
   --text-color: #4682B4;
-  --accent-color: #FFF5EE;
+  --accent-color: #82C4E2;
 }
 
 .lapras-theme {
-  --bg-color: #6495ED;
+  --bg-color: #7DB7F5;
   --text-color: #FFFFFF;
-  --accent-color: #ADD8E6;
+  --accent-color: #C8C0B0;
 }
 
 .umbreon-theme {
@@ -90,15 +90,15 @@ html,
 }
 
 .espeon-theme {
-  --bg-color: #9370DB;
-  --text-color: #8A2BE2;
+  --bg-color: #DEA5E9;
+  --text-color: #4A2D6F;
   --accent-color: #DC143C;
 }
 
 .lucario-theme {
-  --bg-color: #1E90FF;
+  --bg-color: #2E83C4;
   --text-color: #000000;
-  --accent-color: #FFD700;
+  --accent-color: #F0E8D8;
 }
 
 .togepi-theme {
@@ -108,63 +108,63 @@ html,
 }
 
 .machamp-theme {
-  --bg-color: #808080;
-  --text-color: #FFD700;
-  --accent-color: #DC143C;
+  --bg-color: #6B7C90;
+  --text-color: #FFFFFF;
+  --accent-color: #D05038;
 }
 
 .mewtwo-theme {
-  --bg-color: #9370DB;
-  --text-color: #D3D3D3;
-  --accent-color: #87CEEB;
+  --bg-color: #AAAABC;
+  --text-color: #7E78A5;
+  --accent-color: #D8D0E8;
 }
 
 .mew-theme {
-  --bg-color: #FFC0CB;
-  --text-color: #FFFFFF;
-  --accent-color: #87CEEB;
+  --bg-color: #F8C8E8;
+  --text-color: #2F2F2F;
+  --accent-color: #FFF0FA;
 }
 
 .psyduck-theme {
-  --bg-color: #FFFF00;
+  --bg-color: #F8D848;
   --text-color: #000000;
-  --accent-color: #87CEEB;
+  --accent-color: #C0B090;
 }
 
 .arcanine-theme {
-  --bg-color: #FFA500;
+  --bg-color: #F07030;
   --text-color: #000000;
-  --accent-color: #FFF5EE;
+  --accent-color: #F8E8D0;
 }
 
 .articuno-theme {
-  --bg-color: #AFEEEE;
-  --text-color: #4682B4;
-  --accent-color: #FFFFFF;
+  --bg-color: #98D8F0;
+  --text-color: #2F4F6F;
+  --accent-color: #CCE8F8;
 }
 
 .zapdos-theme {
-  --bg-color: #FFD700;
+  --bg-color: #F8D030;
   --text-color: #000000;
-  --accent-color: #FFA500;
+  --accent-color: #333030;
 }
 
 .moltres-theme {
-  --bg-color: #FF4500;
-  --text-color: #FF8C00;
-  --accent-color: #FFD700;
+  --bg-color: #F8A030;
+  --text-color: #2F2F2F;
+  --accent-color: #F05030;
 }
 
 .raichu-theme {
-  --bg-color: #FF8C00;
-  --text-color: #8B4513;
-  --accent-color: #FFD700;
+  --bg-color: #F8B820;
+  --text-color: #2F2F2F;
+  --accent-color: #E05040;
 }
 
 .lugia-theme {
   --bg-color: #FFFFFF;
-  --text-color: #0000FF;
-  --accent-color: #ADD8E6;
+  --text-color: #4169E1;
+  --accent-color: #B0C4DE;
 }
 
 .pokeball-theme {
@@ -172,6 +172,7 @@ html,
   --text-color: #FFFFFF;
   --accent-color: #000000;
 }
+
 
 /* General usage of CSS variables */
 body,
