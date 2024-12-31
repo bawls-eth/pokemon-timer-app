@@ -16,6 +16,33 @@ function MainComponent() {
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
   const [skin, setSkin] = useState("pikachu-theme");
+  const [skins, setSkins] = useState([
+    "pikachu-theme",
+    "charizard-theme",
+    "bulbasaur-theme",
+    "squirtle-theme",
+    "jigglypuff-theme",
+    "meowth-theme",
+    "gengar-theme",
+    "eevee-theme",
+    "snorlax-theme",
+    "dragonite-theme",
+    "lapras-theme",
+    "umbreon-theme",
+    "espeon-theme",
+    "lucario-theme",
+    "togepi-theme",
+    "machamp-theme",
+    "mewtwo-theme",
+    "mew-theme",
+    "psyduck-theme",
+    "arcanine-theme",
+    "articuno-theme",
+    "zapdos-theme",
+    "moltres-theme",
+    "raichu-theme",
+    "lugia-theme"
+  ]);
   const [isPaused, setIsPaused] = useState(false);
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
@@ -24,7 +51,7 @@ function MainComponent() {
   const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
   const playSound = (soundRef) => {
-    if (!audioEnabled) return; // Prevent sound from playing if muted
+    if (!audioEnabled) return;
     try {
       soundRef.pause();
       soundRef.currentTime = 0;
@@ -69,57 +96,36 @@ function MainComponent() {
     localStorage.setItem("selectedSkin", newSkin);
   };
 
-  useEffect(() => {
-    let interval;
-    if (gameStarted && activePlayer && !isPaused) {
-      interval = setInterval(() => {
-        if (activePlayer === 1) {
-          setPlayer1Time((prev) => {
-            if (prev <= 60 && prev > 0) {
-              if (lowHealthSound.current.paused) playSound(lowHealthSound.current);
-            }
-            if (prev === 0) {
-              playSound(victorySound.current);
-              clearInterval(interval);
-            }
-            return prev > 0 ? prev - 1 : 0;
-          });
-        } else {
-          setPlayer2Time((prev) => {
-            if (prev <= 60 && prev > 0) {
-              if (lowHealthSound.current.paused) playSound(lowHealthSound.current);
-            }
-            if (prev === 0) {
-              playSound(victorySound.current);
-              clearInterval(interval);
-            }
-            return prev > 0 ? prev - 1 : 0;
-          });
-        }
-      }, 1000);
+  const handleEasterEgg = () => {
+    if (
+      player1Name.toLowerCase() === "god mode" ||
+      player2Name.toLowerCase() === "god mode"
+    ) {
+      const newSkin = "pokeball-theme";
+      if (!skins.includes(newSkin)) {
+        setSkins((prevSkins) => [...prevSkins, newSkin]);
+      }
+      setSkin(newSkin);
+      localStorage.setItem("selectedSkin", newSkin);
+      setPlayer1Name("Player 1");
+      setPlayer2Name("Player 2");
     }
-    return () => clearInterval(interval);
-  }, [gameStarted, activePlayer, isPaused, playSound]);
+  };
 
-  useEffect(() => {
-    let interval;
-    if (isUpkeepActive && !isPaused) {
-      interval = setInterval(() => {
-        setUpkeepTime((prev) => {
-          if (prev === 10) {
-            playSound(lowHealthSound.current);
-          }
-          if (prev <= 1) {
-            setIsUpkeepActive(false);
-            return savedUpkeepTime;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+  const saveSettings = () => {
+    playSound(plinkSound.current);
+    setShowSettings(false);
+    setIsPaused(false);
+    const newSavedTime = playerTimeInput * 60;
+    setSavedUpkeepTime(upkeepTime);
+    setSavedPlayerTime(newSavedTime);
+    setPlayer1Time(newSavedTime);
+    setPlayer2Time(newSavedTime);
+    localStorage.setItem("savedUpkeepTime", upkeepTime);
+    localStorage.setItem("savedPlayerTime", newSavedTime);
 
-      return () => clearInterval(interval);
-    }
-  }, [isUpkeepActive, savedUpkeepTime, isPaused, playSound]);
+    handleEasterEgg();
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -156,10 +162,6 @@ function MainComponent() {
     }
   };
 
-  const togglePause = () => {
-    setIsPaused((prev) => !prev);
-  };
-
   const resetGame = () => {
     playSound(plinkSound.current);
     stopAllSounds();
@@ -174,28 +176,6 @@ function MainComponent() {
     playSound(plinkSound.current);
     setIsPaused(true);
     setShowSettings(true);
-  };
-
-  const saveSettings = () => {
-    playSound(plinkSound.current);
-    setShowSettings(false);
-    setIsPaused(false);
-    const newSavedTime = playerTimeInput * 60;
-    setSavedUpkeepTime(upkeepTime);
-    setSavedPlayerTime(newSavedTime);
-    setPlayer1Time(newSavedTime);
-    setPlayer2Time(newSavedTime);
-    localStorage.setItem("savedUpkeepTime", upkeepTime);
-    localStorage.setItem("savedPlayerTime", newSavedTime);
-  };
-
-  const handlePlayerTimeChange = (value) => {
-    setPlayerTimeInput(value); // Always update the input value
-    if (value === "") return; // Skip updating the timer if the input is empty
-    if (!isNaN(value) && value >= 0) {
-      setPlayer1Time(value * 60);
-      setPlayer2Time(value * 60);
-    }
   };
 
   return (
@@ -224,7 +204,7 @@ function MainComponent() {
             {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
           </button>
           <div className="control-buttons">
-            <button onClick={togglePause}>{isPaused ? "Resume" : "Pause"}</button>
+            <button onClick={() => setIsPaused((prev) => !prev)}>{isPaused ? "Resume" : "Pause"}</button>
             <button onClick={resetGame}>Reset Game</button>
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
@@ -257,7 +237,7 @@ function MainComponent() {
             <input
               type="number"
               value={playerTimeInput}
-              onChange={(e) => handlePlayerTimeChange(e.target.value)}
+              onChange={(e) => setPlayerTimeInput(Number(e.target.value))}
             />
           </label>
           <label>
@@ -265,37 +245,15 @@ function MainComponent() {
             <input
               type="number"
               value={upkeepTime}
-              onChange={(e) => setUpkeepTime(e.target.value)}
+              onChange={(e) => setUpkeepTime(Number(e.target.value))}
             />
           </label>
           <label>
             Choose a Skin:
             <select value={skin} onChange={(e) => handleSkinChange(e.target.value)}>
-              <option value="pikachu-theme">Pikachu</option>
-              <option value="charizard-theme">Charizard</option>
-              <option value="bulbasaur-theme">Bulbasaur</option>
-              <option value="squirtle-theme">Squirtle</option>
-              <option value="jigglypuff-theme">Jigglypuff</option>
-              <option value="meowth-theme">Meowth</option>
-              <option value="gengar-theme">Gengar</option>
-              <option value="eevee-theme">Eevee</option>
-              <option value="snorlax-theme">Snorlax</option>
-              <option value="dragonite-theme">Dragonite</option>
-              <option value="lapras-theme">Lapras</option>
-              <option value="umbreon-theme">Umbreon</option>
-              <option value="espeon-theme">Espeon</option>
-              <option value="lucario-theme">Lucario</option>
-              <option value="togepi-theme">Togepi</option>
-              <option value="machamp-theme">Machamp</option>
-              <option value="mewtwo-theme">Mewtwo</option>
-              <option value="mew-theme">Mew</option>
-              <option value="psyduck-theme">Psyduck</option>
-              <option value="arcanine-theme">Arcanine</option>
-              <option value="articuno-theme">Articuno</option>
-              <option value="zapdos-theme">Zapdos</option>
-              <option value="moltres-theme">Moltres</option>
-              <option value="raichu-theme">Raichu</option>
-              <option value="lugia-theme">Lugia</option>
+              {skins.map((skinOption) => (
+                <option key={skinOption} value={skinOption}>{skinOption.replace("-theme", "")}</option>
+              ))}
             </select>
           </label>
           <button onClick={saveSettings}>Save</button>

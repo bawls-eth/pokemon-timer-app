@@ -167,6 +167,12 @@ html,
   --accent-color: #ADD8E6;
 }
 
+.pokeball-theme {
+  --bg-color: #FF0000;
+  --text-color: #FFFFFF;
+  --accent-color: #000000;
+}
+
 /* General usage of CSS variables */
 body,
 .main-container {
