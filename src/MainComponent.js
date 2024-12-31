@@ -91,12 +91,18 @@ function MainComponent() {
     if (gameStarted && !isPaused && activePlayer) {
       interval = setInterval(() => {
         setPlayer1Time((prevTime) => {
-          if (activePlayer === 1 && prevTime > 0) return prevTime - 1;
+          if (activePlayer === 1 && prevTime > 0) {
+            if (prevTime <= 60 && prevTime % 10 === 0) playSound(lowHealthSound.current);
+            return prevTime - 1;
+          }
           return prevTime;
         });
 
         setPlayer2Time((prevTime) => {
-          if (activePlayer === 2 && prevTime > 0) return prevTime - 1;
+          if (activePlayer === 2 && prevTime > 0) {
+            if (prevTime <= 60 && prevTime % 10 === 0) playSound(lowHealthSound.current);
+            return prevTime - 1;
+          }
           return prevTime;
         });
       }, 1000);
@@ -110,7 +116,10 @@ function MainComponent() {
     if (isUpkeepActive && !isPaused) {
       interval = setInterval(() => {
         setUpkeepTime((prevTime) => {
-          if (prevTime > 0) return prevTime - 1;
+          if (prevTime > 0) {
+            if (prevTime <= 10 && prevTime % 2 === 0) playSound(lowHealthSound.current);
+            return prevTime - 1;
+          }
           setIsUpkeepActive(false);
           return savedUpkeepTime;
         });
