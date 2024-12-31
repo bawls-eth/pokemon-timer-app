@@ -5,6 +5,7 @@ function MainComponent() {
   const [activePlayer, setActivePlayer] = useState(null);
   const [player1Time, setPlayer1Time] = useState(20 * 60);
   const [player2Time, setPlayer2Time] = useState(20 * 60);
+  const [savedPlayerTime, setSavedPlayerTime] = useState(20 * 60);
   const [upkeepTime, setUpkeepTime] = useState(30);
   const [savedUpkeepTime, setSavedUpkeepTime] = useState(30);
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
@@ -52,6 +53,13 @@ function MainComponent() {
 
     const savedUpkeep = localStorage.getItem("savedUpkeepTime");
     if (savedUpkeep) setSavedUpkeepTime(Number(savedUpkeep));
+
+    const savedGameTimer = localStorage.getItem("savedPlayerTime");
+    if (savedGameTimer) {
+      setSavedPlayerTime(Number(savedGameTimer));
+      setPlayer1Time(Number(savedGameTimer));
+      setPlayer2Time(Number(savedGameTimer));
+    }
   }, []);
 
   const handleSkinChange = (newSkin) => {
@@ -120,8 +128,8 @@ function MainComponent() {
   const startGame = (player) => {
     setGameStarted(true);
     setActivePlayer(player);
-    setPlayer1Time(20 * 60);
-    setPlayer2Time(20 * 60);
+    setPlayer1Time(savedPlayerTime);
+    setPlayer2Time(savedPlayerTime);
     playSound(startGameSound.current);
   };
 
@@ -154,8 +162,8 @@ function MainComponent() {
     playSound(plinkSound.current);
     stopAllSounds();
     setGameStarted(false);
-    setPlayer1Time(20 * 60);
-    setPlayer2Time(20 * 60);
+    setPlayer1Time(savedPlayerTime);
+    setPlayer2Time(savedPlayerTime);
     setUpkeepTime(savedUpkeepTime);
     setIsUpkeepActive(false);
   };
@@ -164,7 +172,9 @@ function MainComponent() {
     playSound(plinkSound.current);
     setShowSettings(false);
     setSavedUpkeepTime(upkeepTime);
+    setSavedPlayerTime(player1Time);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
+    localStorage.setItem("savedPlayerTime", player1Time);
   };
 
   return (
@@ -232,10 +242,12 @@ function MainComponent() {
             Game Timer (minutes):
             <input
               type="number"
-              value={Math.floor(player1Time / 60)}
+              value={Math.floor(savedPlayerTime / 60)}
               onChange={(e) => {
-                setPlayer1Time(e.target.value * 60);
-                setPlayer2Time(e.target.value * 60);
+                const newTime = e.target.value * 60;
+                setPlayer1Time(newTime);
+                setPlayer2Time(newTime);
+                setSavedPlayerTime(newTime);
               }}
             />
           </label>
