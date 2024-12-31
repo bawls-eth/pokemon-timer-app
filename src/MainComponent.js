@@ -168,9 +168,16 @@ function MainComponent() {
     setIsUpkeepActive(false);
   };
 
+  const openSettings = () => {
+    playSound(plinkSound.current);
+    setIsPaused(true);
+    setShowSettings(true);
+  };
+
   const saveSettings = () => {
     playSound(plinkSound.current);
     setShowSettings(false);
+    setIsPaused(false);
     setSavedUpkeepTime(upkeepTime);
     setSavedPlayerTime(player1Time);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
@@ -208,14 +215,7 @@ function MainComponent() {
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
             </button>
-            <button
-              onClick={() => {
-                setShowSettings(true);
-                playSound(plinkSound.current);
-              }}
-            >
-              ⚙️ Settings
-            </button>
+            <button onClick={openSettings}>⚙️ Settings</button>
           </div>
         </div>
       )}
