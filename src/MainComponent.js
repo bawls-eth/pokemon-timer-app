@@ -89,7 +89,7 @@ function MainComponent() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [gameStarted, activePlayer, isPaused]);
+  }, [gameStarted, activePlayer, isPaused, playSound]);
 
   useEffect(() => {
     let interval;
@@ -109,7 +109,7 @@ function MainComponent() {
 
       return () => clearInterval(interval);
     }
-  }, [isUpkeepActive, savedUpkeepTime, isPaused]);
+  }, [isUpkeepActive, savedUpkeepTime, isPaused, playSound]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
