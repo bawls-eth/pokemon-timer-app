@@ -1,4 +1,3 @@
-// MainComponent.js
 import React, { useState, useEffect, useRef } from "react";
 import "./MainComponent.css";
 
@@ -53,13 +52,8 @@ function MainComponent() {
 
   const playSound = (soundRef) => {
     if (!audioEnabled) return;
-    try {
-      soundRef.pause();
-      soundRef.currentTime = 0;
-      soundRef.play().catch((error) => console.error("Audio playback error:", error));
-    } catch (error) {
-      console.error("Error playing sound:", error);
-    }
+    soundRef.currentTime = 0;
+    soundRef.play().catch((error) => console.error("Audio playback error:", error));
   };
 
   const stopAllSounds = () => {
@@ -92,16 +86,47 @@ function MainComponent() {
     }
   }, []);
 
+  useEffect(() => {
+    let interval;
+    if (gameStarted && !isPaused && activePlayer) {
+      interval = setInterval(() => {
+        setPlayer1Time((prevTime) => {
+          if (activePlayer === 1 && prevTime > 0) return prevTime - 1;
+          return prevTime;
+        });
+
+        setPlayer2Time((prevTime) => {
+          if (activePlayer === 2 && prevTime > 0) return prevTime - 1;
+          return prevTime;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [gameStarted, isPaused, activePlayer]);
+
+  useEffect(() => {
+    let interval;
+    if (isUpkeepActive && !isPaused) {
+      interval = setInterval(() => {
+        setUpkeepTime((prevTime) => {
+          if (prevTime > 0) return prevTime - 1;
+          setIsUpkeepActive(false);
+          return savedUpkeepTime;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [isUpkeepActive, isPaused, savedUpkeepTime]);
+
   const handleSkinChange = (newSkin) => {
     setSkin(newSkin);
     localStorage.setItem("selectedSkin", newSkin);
   };
 
   const handleEasterEgg = () => {
-    if (
-      player1Name.toLowerCase() === "god mode" ||
-      player2Name.toLowerCase() === "god mode"
-    ) {
+    if (player1Name.toLowerCase() === "god mode" || player2Name.toLowerCase() === "god mode") {
       const newSkin = "pokeball-theme";
       if (!skins.includes(newSkin)) {
         setSkins((prevSkins) => [...prevSkins, newSkin]);
@@ -124,7 +149,6 @@ function MainComponent() {
     setPlayer2Time(newSavedTime);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
     localStorage.setItem("savedPlayerTime", newSavedTime);
-
     handleEasterEgg();
   };
 
@@ -145,8 +169,6 @@ function MainComponent() {
   const passTurn = () => {
     playSound(plinkSound.current);
     setIsUpkeepActive(false);
-    lowHealthSound.current.pause();
-    lowHealthSound.current.currentTime = 0;
     setUpkeepTime(savedUpkeepTime);
     setActivePlayer((prev) => (prev === 1 ? 2 : 1));
   };
@@ -154,8 +176,6 @@ function MainComponent() {
   const toggleUpkeep = () => {
     playSound(plinkSound.current);
     if (isUpkeepActive) {
-      lowHealthSound.current.pause();
-      lowHealthSound.current.currentTime = 0;
       setIsUpkeepActive(false);
       setUpkeepTime(savedUpkeepTime);
     } else {
@@ -178,20 +198,6 @@ function MainComponent() {
     setIsPaused(true);
     setShowSettings(true);
   };
-
-  useEffect(() => {
-    let timer;
-    if (gameStarted && activePlayer && !isPaused) {
-      timer = setInterval(() => {
-        if (activePlayer === 1) {
-          setPlayer1Time((prev) => (prev > 0 ? prev - 1 : prev));
-        } else {
-          setPlayer2Time((prev) => (prev > 0 ? prev - 1 : prev));
-        }
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [gameStarted, activePlayer, isPaused]);
 
   return (
     <div className={`main-container ${skin}`}>
