@@ -21,10 +21,13 @@ function MainComponent() {
   const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
   const playSound = (soundRef) => {
-    if (audioEnabled) {
+    if (!audioEnabled) return; // Prevent sound from playing if muted
+    try {
       soundRef.pause();
       soundRef.currentTime = 0;
       soundRef.play().catch((error) => console.error("Audio playback error:", error));
+    } catch (error) {
+      console.error("Error playing sound:", error);
     }
   };
 
@@ -33,6 +36,14 @@ function MainComponent() {
       sound.pause();
       sound.currentTime = 0;
     });
+  };
+
+  const toggleAudio = () => {
+    if (audioEnabled) {
+      // Stop all currently playing sounds when muting
+      stopAllSounds();
+    }
+    setAudioEnabled(!audioEnabled); // Toggle the audio state
   };
 
   useEffect(() => {
@@ -143,11 +154,6 @@ function MainComponent() {
     setPlayer2Time(20 * 60);
     setUpkeepTime(savedUpkeepTime);
     setIsUpkeepActive(false);
-  };
-
-  const toggleAudio = () => {
-    setAudioEnabled(!audioEnabled);
-    stopAllSounds();
   };
 
   const saveSettings = () => {
