@@ -6,6 +6,7 @@ function MainComponent() {
   const [player1Time, setPlayer1Time] = useState(20 * 60);
   const [player2Time, setPlayer2Time] = useState(20 * 60);
   const [savedPlayerTime, setSavedPlayerTime] = useState(20 * 60);
+  const [playerTimeInput, setPlayerTimeInput] = useState(20);
   const [upkeepTime, setUpkeepTime] = useState(30);
   const [savedUpkeepTime, setSavedUpkeepTime] = useState(30);
   const [isUpkeepActive, setIsUpkeepActive] = useState(false);
@@ -59,6 +60,7 @@ function MainComponent() {
       setSavedPlayerTime(Number(savedGameTimer));
       setPlayer1Time(Number(savedGameTimer));
       setPlayer2Time(Number(savedGameTimer));
+      setPlayerTimeInput(Number(savedGameTimer) / 60);
     }
   }, []);
 
@@ -178,10 +180,21 @@ function MainComponent() {
     playSound(plinkSound.current);
     setShowSettings(false);
     setIsPaused(false);
+    const newSavedTime = playerTimeInput * 60;
     setSavedUpkeepTime(upkeepTime);
-    setSavedPlayerTime(player1Time);
+    setSavedPlayerTime(newSavedTime);
+    setPlayer1Time(newSavedTime);
+    setPlayer2Time(newSavedTime);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
-    localStorage.setItem("savedPlayerTime", player1Time);
+    localStorage.setItem("savedPlayerTime", newSavedTime);
+  };
+
+  const handlePlayerTimeChange = (value) => {
+    setPlayerTimeInput(value);
+    if (!isNaN(value) && value >= 0) {
+      setPlayer1Time(value * 60);
+      setPlayer2Time(value * 60);
+    }
   };
 
   return (
@@ -242,13 +255,8 @@ function MainComponent() {
             Game Timer (minutes):
             <input
               type="number"
-              value={Math.floor(savedPlayerTime / 60)}
-              onChange={(e) => {
-                const newTime = e.target.value * 60;
-                setPlayer1Time(newTime);
-                setPlayer2Time(newTime);
-                setSavedPlayerTime(newTime);
-              }}
+              value={playerTimeInput}
+              onChange={(e) => handlePlayerTimeChange(Number(e.target.value))}
             />
           </label>
           <label>
