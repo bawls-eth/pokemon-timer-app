@@ -190,7 +190,8 @@ function MainComponent() {
   };
 
   const handlePlayerTimeChange = (value) => {
-    setPlayerTimeInput(value);
+    setPlayerTimeInput(value); // Always update the input value
+    if (value === "") return; // Skip updating the timer if the input is empty
     if (!isNaN(value) && value >= 0) {
       setPlayer1Time(value * 60);
       setPlayer2Time(value * 60);
@@ -256,7 +257,7 @@ function MainComponent() {
             <input
               type="number"
               value={playerTimeInput}
-              onChange={(e) => handlePlayerTimeChange(Number(e.target.value))}
+              onChange={(e) => handlePlayerTimeChange(e.target.value)}
             />
           </label>
           <label>
