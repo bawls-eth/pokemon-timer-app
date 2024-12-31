@@ -41,7 +41,7 @@ function MainComponent() {
     "zapdos-theme",
     "moltres-theme",
     "raichu-theme",
-    "lugia-theme"
+    "lugia-theme",
   ]);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -264,3 +264,4 @@ function MainComponent() {
 }
 
 export default MainComponent;
+
