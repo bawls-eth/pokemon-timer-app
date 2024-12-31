@@ -14,6 +14,7 @@ function MainComponent() {
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
   const [skin, setSkin] = useState("pikachu-theme");
+  const [isPaused, setIsPaused] = useState(false);
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
   const lowHealthSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/low-health.mp3`));
@@ -40,10 +41,9 @@ function MainComponent() {
 
   const toggleAudio = () => {
     if (audioEnabled) {
-      // Stop all currently playing sounds when muting
       stopAllSounds();
     }
-    setAudioEnabled(!audioEnabled); // Toggle the audio state
+    setAudioEnabled(!audioEnabled);
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function MainComponent() {
 
   useEffect(() => {
     let interval;
-    if (gameStarted && activePlayer) {
+    if (gameStarted && activePlayer && !isPaused) {
       interval = setInterval(() => {
         if (activePlayer === 1) {
           setPlayer1Time((prev) => {
@@ -89,11 +89,11 @@ function MainComponent() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [gameStarted, activePlayer]);
+  }, [gameStarted, activePlayer, isPaused]);
 
   useEffect(() => {
     let interval;
-    if (isUpkeepActive) {
+    if (isUpkeepActive && !isPaused) {
       interval = setInterval(() => {
         setUpkeepTime((prev) => {
           if (prev === 10) {
@@ -109,7 +109,7 @@ function MainComponent() {
 
       return () => clearInterval(interval);
     }
-  }, [isUpkeepActive, savedUpkeepTime]);
+  }, [isUpkeepActive, savedUpkeepTime, isPaused]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -144,6 +144,10 @@ function MainComponent() {
     } else {
       setIsUpkeepActive(true);
     }
+  };
+
+  const togglePause = () => {
+    setIsPaused((prev) => !prev);
   };
 
   const resetGame = () => {
@@ -189,11 +193,19 @@ function MainComponent() {
             {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
           </button>
           <div className="control-buttons">
+            <button onClick={togglePause}>{isPaused ? "Resume" : "Pause"}</button>
             <button onClick={resetGame}>Reset Game</button>
             <button onClick={toggleAudio}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
             </button>
-            <button onClick={() => { setShowSettings(true); playSound(plinkSound.current); }}>⚙️ Settings</button>
+            <button
+              onClick={() => {
+                setShowSettings(true);
+                playSound(plinkSound.current);
+              }}
+            >
+              ⚙️ Settings
+            </button>
           </div>
         </div>
       )}
