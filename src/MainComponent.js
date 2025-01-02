@@ -144,6 +144,17 @@ function MainComponent() {
     const player1Key = player1Name.toLowerCase();
     const player2Key = player2Name.toLowerCase();
 
+    if (player1Key === "god mode" || player2Key === "god mode") {
+      const allSkins = Object.values(easterEggSkins);
+      setSkins((prevSkins) => {
+        const newSkins = allSkins.filter((skin) => !prevSkins.includes(skin));
+        return [...prevSkins, ...newSkins];
+      });
+      setSkin(allSkins[0]);
+      localStorage.setItem("selectedSkin", allSkins[0]);
+      return;
+    }
+
     if (easterEggSkins[player1Key] || player1Name.toLowerCase() === "god mode") {
       setPlayer1Name("Player 1");
     }
