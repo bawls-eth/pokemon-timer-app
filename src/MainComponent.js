@@ -294,10 +294,11 @@ function MainComponent() {
             Game Timer (minutes):
             <input
               type="number"
-              value={playerTimeInput}
+              placeholder=""
+              value={playerTimeInput === 0 ? "" : playerTimeInput}
               onChange={(e) => {
                 playSound(plinkSound.current);
-                setPlayerTimeInput(Number(e.target.value));
+                setPlayerTimeInput(Number(e.target.value) || 0);
               }}
             />
           </label>
@@ -305,10 +306,11 @@ function MainComponent() {
             Upkeep Timer (seconds):
             <input
               type="number"
-              value={upkeepTime}
+              placeholder=""
+              value={upkeepTime === 0 ? "" : upkeepTime}
               onChange={(e) => {
                 playSound(plinkSound.current);
-                setUpkeepTime(Number(e.target.value));
+                setUpkeepTime(Number(e.target.value) || 0);
               }}
             />
           </label>
