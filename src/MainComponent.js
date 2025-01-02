@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./MainComponent.css";
 
 function MainComponent() {
@@ -15,34 +15,8 @@ function MainComponent() {
   const [showSettings, setShowSettings] = useState(false);
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
-  const [skin, setSkin] = useState("pikachu-theme");
-  const [skins, setSkins] = useState([
-    "pikachu-theme",
-    "charizard-theme",
-    "bulbasaur-theme",
-    "squirtle-theme",
-    "jigglypuff-theme",
-    "meowth-theme",
-    "gengar-theme",
-    "eevee-theme",
-    "snorlax-theme",
-    "dragonite-theme",
-    "lapras-theme",
-    "umbreon-theme",
-    "espeon-theme",
-    "lucario-theme",
-    "togepi-theme",
-    "machamp-theme",
-    "mewtwo-theme",
-    "mew-theme",
-    "psyduck-theme",
-    "arcanine-theme",
-    "articuno-theme",
-    "zapdos-theme",
-    "moltres-theme",
-    "raichu-theme",
-    "lugia-theme",
-  ]);
+  const [skin, setSkin] = useState("pokeball-theme");
+  const [skins, setSkins] = useState([]);
   const [isPaused, setIsPaused] = useState(false);
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
@@ -50,12 +24,14 @@ function MainComponent() {
   const victorySound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/victory.mp3`));
   const plinkSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/plink.mp3`));
 
-  const playSound = (soundRef) => {
-    if (!audioEnabled) return;
-    soundRef.pause();
-    soundRef.currentTime = 0;
-    soundRef.play().catch((error) => console.error("Audio playback error:", error));
-  };
+  const playSound = useCallback(
+    (soundRef) => {
+      if (!audioEnabled) return;
+      soundRef.currentTime = 0;
+      soundRef.play().catch((error) => console.error("Audio playback error:", error));
+    },
+    [audioEnabled]
+  );
 
   const stopAllSounds = () => {
     [startGameSound.current, lowHealthSound.current, victorySound.current, plinkSound.current].forEach((sound) => {
@@ -92,32 +68,25 @@ function MainComponent() {
     if (gameStarted && !isPaused && activePlayer) {
       interval = setInterval(() => {
         setPlayer1Time((prevTime) => {
-          if (activePlayer === 1 && prevTime > 0) {
-            if (prevTime === 60) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
+          if (activePlayer === 1 && prevTime > 0) return prevTime - 1;
           return prevTime;
         });
 
         setPlayer2Time((prevTime) => {
-          if (activePlayer === 2 && prevTime > 0) {
-            if (prevTime === 60) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
+          if (activePlayer === 2 && prevTime > 0) return prevTime - 1;
           return prevTime;
         });
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [gameStarted, isPaused, activePlayer]);
+  }, [gameStarted, isPaused, activePlayer, playSound]);
 
   useEffect(() => {
     let interval;
     if (isUpkeepActive && !isPaused) {
       interval = setInterval(() => {
         setUpkeepTime((prevTime) => {
-          if (prevTime === 10) playSound(lowHealthSound.current);
           if (prevTime > 0) return prevTime - 1;
           setIsUpkeepActive(false);
           return savedUpkeepTime;
@@ -126,17 +95,67 @@ function MainComponent() {
     }
 
     return () => clearInterval(interval);
-  }, [isUpkeepActive, isPaused, savedUpkeepTime]);
+  }, [isUpkeepActive, isPaused, savedUpkeepTime, playSound]);
 
   const handleSkinChange = (newSkin) => {
     setSkin(newSkin);
     localStorage.setItem("selectedSkin", newSkin);
   };
 
+  const handleEasterEgg = () => {
+    const easterEggSkins = {
+      pikachu: "pikachu-theme",
+      charizard: "charizard-theme",
+      bulbasaur: "bulbasaur-theme",
+      squirtle: "squirtle-theme",
+      jigglypuff: "jigglypuff-theme",
+      meowth: "meowth-theme",
+      gengar: "gengar-theme",
+      eevee: "eevee-theme",
+      snorlax: "snorlax-theme",
+      dragonite: "dragonite-theme",
+      lapras: "lapras-theme",
+      umbreon: "umbreon-theme",
+      espeon: "espeon-theme",
+      lucario: "lucario-theme",
+      togepi: "togepi-theme",
+      machamp: "machamp-theme",
+      mewtwo: "mewtwo-theme",
+      mew: "mew-theme",
+      psyduck: "psyduck-theme",
+      arcanine: "arcanine-theme",
+      articuno: "articuno-theme",
+      zapdos: "zapdos-theme",
+      moltres: "moltres-theme",
+      raichu: "raichu-theme",
+      lugia: "lugia-theme",
+    };
+
+    const player1Key = player1Name.toLowerCase();
+    const player2Key = player2Name.toLowerCase();
+
+    if (easterEggSkins[player1Key]) {
+      const newSkin = easterEggSkins[player1Key];
+      if (!skins.includes(newSkin)) {
+        setSkins((prevSkins) => [...prevSkins, newSkin]);
+      }
+      setSkin(newSkin);
+      localStorage.setItem("selectedSkin", newSkin);
+    } else if (easterEggSkins[player2Key]) {
+      const newSkin = easterEggSkins[player2Key];
+      if (!skins.includes(newSkin)) {
+        setSkins((prevSkins) => [...prevSkins, newSkin]);
+      }
+      setSkin(newSkin);
+      localStorage.setItem("selectedSkin", newSkin);
+    } else {
+      setSkin("pokeball-theme");
+      localStorage.setItem("selectedSkin", "pokeball-theme");
+    }
+  };
+
   const saveSettings = () => {
-    playSound(plinkSound.current);
     setShowSettings(false);
-    setIsPaused(false);
     const newSavedTime = playerTimeInput * 60;
     setSavedUpkeepTime(upkeepTime);
     setSavedPlayerTime(newSavedTime);
@@ -144,6 +163,7 @@ function MainComponent() {
     setPlayer2Time(newSavedTime);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
     localStorage.setItem("savedPlayerTime", newSavedTime);
+    handleEasterEgg();
   };
 
   const formatTime = (seconds) => {
