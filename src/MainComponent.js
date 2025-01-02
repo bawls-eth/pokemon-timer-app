@@ -52,6 +52,7 @@ function MainComponent() {
 
   const playSound = (soundRef) => {
     if (!audioEnabled) return;
+    soundRef.pause();
     soundRef.currentTime = 0;
     soundRef.play().catch((error) => console.error("Audio playback error:", error));
   };
@@ -92,7 +93,7 @@ function MainComponent() {
       interval = setInterval(() => {
         setPlayer1Time((prevTime) => {
           if (activePlayer === 1 && prevTime > 0) {
-            if (prevTime <= 60 && prevTime % 10 === 0) playSound(lowHealthSound.current);
+            if (prevTime === 60) playSound(lowHealthSound.current);
             return prevTime - 1;
           }
           return prevTime;
@@ -100,7 +101,7 @@ function MainComponent() {
 
         setPlayer2Time((prevTime) => {
           if (activePlayer === 2 && prevTime > 0) {
-            if (prevTime <= 60 && prevTime % 10 === 0) playSound(lowHealthSound.current);
+            if (prevTime === 60) playSound(lowHealthSound.current);
             return prevTime - 1;
           }
           return prevTime;
@@ -116,10 +117,8 @@ function MainComponent() {
     if (isUpkeepActive && !isPaused) {
       interval = setInterval(() => {
         setUpkeepTime((prevTime) => {
-          if (prevTime > 0) {
-            if (prevTime <= 10 && prevTime % 2 === 0) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
+          if (prevTime === 10) playSound(lowHealthSound.current);
+          if (prevTime > 0) return prevTime - 1;
           setIsUpkeepActive(false);
           return savedUpkeepTime;
         });
@@ -134,19 +133,6 @@ function MainComponent() {
     localStorage.setItem("selectedSkin", newSkin);
   };
 
-  const handleEasterEgg = () => {
-    if (player1Name.toLowerCase() === "god mode" || player2Name.toLowerCase() === "god mode") {
-      const newSkin = "pokeball-theme";
-      if (!skins.includes(newSkin)) {
-        setSkins((prevSkins) => [...prevSkins, newSkin]);
-      }
-      setSkin(newSkin);
-      localStorage.setItem("selectedSkin", newSkin);
-      setPlayer1Name("Player 1");
-      setPlayer2Name("Player 2");
-    }
-  };
-
   const saveSettings = () => {
     playSound(plinkSound.current);
     setShowSettings(false);
@@ -158,7 +144,6 @@ function MainComponent() {
     setPlayer2Time(newSavedTime);
     localStorage.setItem("savedUpkeepTime", upkeepTime);
     localStorage.setItem("savedPlayerTime", newSavedTime);
-    handleEasterEgg();
   };
 
   const formatTime = (seconds) => {
