@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react"; 
 import "./MainComponent.css";
 
 function MainComponent() {
@@ -171,6 +171,7 @@ function MainComponent() {
     setSavedPlayerTime(newSavedTime);
     setPlayer1Time(newSavedTime);
     setPlayer2Time(newSavedTime);
+    setUpkeepTime(savedUpkeepTime); // Ensure upkeepTime resets to saved value on save
     localStorage.setItem("savedUpkeepTime", upkeepTime);
     localStorage.setItem("savedPlayerTime", newSavedTime);
     handleEasterEgg();
