@@ -61,27 +61,34 @@ function MainComponent() {
       setPlayer2Time(Number(savedGameTimer));
       setPlayerTimeInput(Number(savedGameTimer) / 60);
     }
+
+    const savedActivePlayer = localStorage.getItem("activePlayer");
+    if (savedActivePlayer) {
+      setActivePlayer(Number(savedActivePlayer));
+    }
   }, []);
 
   useEffect(() => {
     let interval;
-    if (gameStarted && !isPaused && activePlayer) {
+    if (gameStarted && !isPaused) {
       interval = setInterval(() => {
-        setPlayer1Time((prevTime) => {
-          if (activePlayer === 1 && prevTime > 0) {
-            if (prevTime === 60) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
-          return prevTime;
-        });
-
-        setPlayer2Time((prevTime) => {
-          if (activePlayer === 2 && prevTime > 0) {
-            if (prevTime === 60) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
-          return prevTime;
-        });
+        if (activePlayer === 1) {
+          setPlayer1Time((prevTime) => {
+            if (prevTime > 0) {
+              if (prevTime === 60) playSound(lowHealthSound.current);
+              return prevTime - 1;
+            }
+            return prevTime;
+          });
+        } else if (activePlayer === 2) {
+          setPlayer2Time((prevTime) => {
+            if (prevTime > 0) {
+              if (prevTime === 60) playSound(lowHealthSound.current);
+              return prevTime - 1;
+            }
+            return prevTime;
+          });
+        }
       }, 1000);
     }
 
@@ -111,22 +118,26 @@ function MainComponent() {
     const savedTime1 = localStorage.getItem("savedPlayer1Time");
     const savedTime2 = localStorage.getItem("savedPlayer2Time");
 
-    if (savedTimestamp && savedTime1 && savedTime2) {
+    if (savedTimestamp && (savedTime1 || savedTime2)) {
       const elapsedTime = Math.floor((Date.now() - Number(savedTimestamp)) / 1000);
-      setPlayer1Time(Math.max(0, Number(savedTime1) - elapsedTime));
-      setPlayer2Time(Math.max(0, Number(savedTime2) - elapsedTime));
+      if (activePlayer === 1) {
+        setPlayer1Time(Math.max(0, Number(savedTime1) - elapsedTime));
+      } else if (activePlayer === 2) {
+        setPlayer2Time(Math.max(0, Number(savedTime2) - elapsedTime));
+      }
     }
-  }, []);
+  }, [activePlayer]);
 
   const updateTimers = useCallback(() => {
     localStorage.setItem("savedTimestamp", Date.now());
     localStorage.setItem("savedPlayer1Time", player1Time);
     localStorage.setItem("savedPlayer2Time", player2Time);
-  }, [player1Time, player2Time]);
+    localStorage.setItem("activePlayer", activePlayer);
+  }, [player1Time, player2Time, activePlayer]);
 
   useEffect(() => {
     updateTimers();
-  }, [player1Time, player2Time, updateTimers]);
+  }, [player1Time, player2Time, activePlayer, updateTimers]);
 
   const handleSkinChange = (newSkin) => {
     playSound(plinkSound.current);
@@ -248,6 +259,7 @@ function MainComponent() {
     localStorage.removeItem("savedPlayer2Time");
     localStorage.removeItem("savedPlayerTime");
     localStorage.removeItem("savedUpkeepTime");
+    localStorage.removeItem("activePlayer");
   };
 
   const openSettings = () => {
