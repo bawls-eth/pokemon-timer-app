@@ -106,6 +106,28 @@ function MainComponent() {
     return () => clearInterval(interval);
   }, [isUpkeepActive, isPaused, savedUpkeepTime, playSound]);
 
+  useEffect(() => {
+    const savedTimestamp = localStorage.getItem("savedTimestamp");
+    const savedTime1 = localStorage.getItem("savedPlayer1Time");
+    const savedTime2 = localStorage.getItem("savedPlayer2Time");
+
+    if (savedTimestamp && savedTime1 && savedTime2) {
+      const elapsedTime = Math.floor((Date.now() - Number(savedTimestamp)) / 1000);
+      setPlayer1Time(Math.max(0, Number(savedTime1) - elapsedTime));
+      setPlayer2Time(Math.max(0, Number(savedTime2) - elapsedTime));
+    }
+  }, []);
+
+  const updateTimers = useCallback(() => {
+    localStorage.setItem("savedTimestamp", Date.now());
+    localStorage.setItem("savedPlayer1Time", player1Time);
+    localStorage.setItem("savedPlayer2Time", player2Time);
+  }, [player1Time, player2Time]);
+
+  useEffect(() => {
+    updateTimers();
+  }, [player1Time, player2Time, updateTimers]);
+
   const handleSkinChange = (newSkin) => {
     playSound(plinkSound.current);
     setSkin(newSkin);
