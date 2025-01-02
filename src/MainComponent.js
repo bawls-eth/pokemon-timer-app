@@ -144,57 +144,29 @@ function MainComponent() {
     const player1Key = player1Name.toLowerCase();
     const player2Key = player2Name.toLowerCase();
 
-    if (easterEggSkins[player1Key]) {
-      const newSkin = easterEggSkins[player1Key];
+    if (easterEggSkins[player1Key] || player1Name.toLowerCase() === "god mode") {
+      setPlayer1Name("Player 1");
+    }
+    if (easterEggSkins[player2Key] || player2Name.toLowerCase() === "god mode") {
+      setPlayer2Name("Player 2");
+    }
+
+    if (easterEggSkins[player1Key] || easterEggSkins[player2Key]) {
+      const newSkin = easterEggSkins[player1Key] || easterEggSkins[player2Key];
       if (!skins.includes(newSkin)) {
         setSkins((prevSkins) => [...prevSkins, newSkin]);
       }
       setSkin(newSkin);
       localStorage.setItem("selectedSkin", newSkin);
-    } else if (easterEggSkins[player2Key]) {
-      const newSkin = easterEggSkins[player2Key];
-      if (!skins.includes(newSkin)) {
-        setSkins((prevSkins) => [...prevSkins, newSkin]);
-      }
-      setSkin(newSkin);
-      localStorage.setItem("selectedSkin", newSkin);
-    } else {
-      setSkin("pokeball-theme");
-      localStorage.setItem("selectedSkin", "pokeball-theme");
     }
   };
-
-  const checkGodMode = () => {
-    if (player1Name.toLowerCase() === "god mode" || player2Name.toLowerCase() === "god mode") {
-      playSound(plinkSound.current);
-      const allSkins = [
-        "pikachu-theme", "charizard-theme", "bulbasaur-theme", "squirtle-theme", "jigglypuff-theme", "meowth-theme",
-        "gengar-theme", "eevee-theme", "snorlax-theme", "dragonite-theme", "lapras-theme", "umbreon-theme",
-        "espeon-theme", "lucario-theme", "togepi-theme", "machamp-theme", "mewtwo-theme", "mew-theme",
-        "psyduck-theme", "arcanine-theme", "articuno-theme", "zapdos-theme", "moltres-theme", "raichu-theme",
-        "lugia-theme", "pokeball-theme"
-      ];
-      setSkins(allSkins);
-      setSkin("pokeball-theme");
-    }
-  };
-
-  useEffect(() => {
-    checkGodMode();
-  }, [player1Name, player2Name]);
 
   const saveSettings = () => {
     playSound(plinkSound.current);
     setShowSettings(false);
     setIsPaused(false);
-    const newSavedTime = playerTimeInput * 60;
     setSavedUpkeepTime(upkeepTime);
-    setSavedPlayerTime(newSavedTime);
-    setPlayer1Time(newSavedTime);
-    setPlayer2Time(newSavedTime);
-    setUpkeepTime(savedUpkeepTime); // Ensure upkeepTime resets to saved value on save
-    localStorage.setItem("savedUpkeepTime", upkeepTime);
-    localStorage.setItem("savedPlayerTime", newSavedTime);
+    setSavedPlayerTime(savedPlayerTime); // Do not reset time on save
     handleEasterEgg();
   };
 
@@ -208,8 +180,6 @@ function MainComponent() {
     playSound(plinkSound.current);
     setGameStarted(true);
     setActivePlayer(player);
-    setPlayer1Time(savedPlayerTime);
-    setPlayer2Time(savedPlayerTime);
     playSound(startGameSound.current);
   };
 
