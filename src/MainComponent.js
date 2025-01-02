@@ -16,7 +16,7 @@ function MainComponent() {
   const [player1Name, setPlayer1Name] = useState("Player 1");
   const [player2Name, setPlayer2Name] = useState("Player 2");
   const [skin, setSkin] = useState("pokeball-theme");
-  const [skins, setSkins] = useState([]);
+  const [skins, setSkins] = useState(["pokeball-theme"]);
   const [isPaused, setIsPaused] = useState(false);
 
   const startGameSound = useRef(new Audio(`${process.env.PUBLIC_URL}/sounds/battle.mp3`));
