@@ -107,6 +107,7 @@ function MainComponent() {
   }, [isUpkeepActive, isPaused, savedUpkeepTime, playSound]);
 
   const handleSkinChange = (newSkin) => {
+    playSound(plinkSound.current);
     setSkin(newSkin);
     localStorage.setItem("selectedSkin", newSkin);
   };
@@ -163,7 +164,21 @@ function MainComponent() {
     }
   };
 
+  const unlockGodMode = () => {
+    playSound(plinkSound.current);
+    const allSkins = [
+      "pikachu-theme", "charizard-theme", "bulbasaur-theme", "squirtle-theme", "jigglypuff-theme", "meowth-theme",
+      "gengar-theme", "eevee-theme", "snorlax-theme", "dragonite-theme", "lapras-theme", "umbreon-theme",
+      "espeon-theme", "lucario-theme", "togepi-theme", "machamp-theme", "mewtwo-theme", "mew-theme",
+      "psyduck-theme", "arcanine-theme", "articuno-theme", "zapdos-theme", "moltres-theme", "raichu-theme",
+      "lugia-theme", "pokeball-theme"
+    ];
+    setSkins(allSkins);
+    setSkin("pokeball-theme");
+  };
+
   const saveSettings = () => {
+    playSound(plinkSound.current);
     setShowSettings(false);
     setIsPaused(false);
     const newSavedTime = playerTimeInput * 60;
@@ -184,6 +199,7 @@ function MainComponent() {
   };
 
   const startGame = (player) => {
+    playSound(plinkSound.current);
     setGameStarted(true);
     setActivePlayer(player);
     setPlayer1Time(savedPlayerTime);
@@ -227,6 +243,7 @@ function MainComponent() {
   return (
     <div className={`main-container ${skin}`}>
       <h1 className="header">Pokémon TCG Timer</h1>
+      <button onClick={unlockGodMode} className="god-mode-button">Activate God Mode</button>
       {!gameStarted ? (
         <div className="start-buttons">
           <button onClick={() => startGame(1)}>Start Game</button>
@@ -250,12 +267,26 @@ function MainComponent() {
             {isUpkeepActive ? "Reset Upkeep" : "Start Upkeep"}
           </button>
           <div className="control-buttons">
-            <button onClick={() => setIsPaused((prev) => !prev)}>{isPaused ? "Resume" : "Pause"}</button>
-            <button onClick={resetGame}>Reset Game</button>
-            <button onClick={toggleAudio}>
+            <button onClick={() => {
+              playSound(plinkSound.current);
+              setIsPaused((prev) => !prev);
+            }}>
+              {isPaused ? "Resume" : "Pause"}
+            </button>
+            <button onClick={() => {
+              playSound(plinkSound.current);
+              resetGame();
+            }}>Reset Game</button>
+            <button onClick={() => {
+              playSound(plinkSound.current);
+              toggleAudio();
+            }}>
               {audioEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
             </button>
-            <button onClick={openSettings}>⚙️ Settings</button>
+            <button onClick={() => {
+              playSound(plinkSound.current);
+              openSettings();
+            }}>⚙️ Settings</button>
           </div>
         </div>
       )}
@@ -267,7 +298,10 @@ function MainComponent() {
             <input
               type="text"
               value={player1Name}
-              onChange={(e) => setPlayer1Name(e.target.value)}
+              onChange={(e) => {
+                playSound(plinkSound.current);
+                setPlayer1Name(e.target.value);
+              }}
             />
           </label>
           <label>
@@ -275,7 +309,10 @@ function MainComponent() {
             <input
               type="text"
               value={player2Name}
-              onChange={(e) => setPlayer2Name(e.target.value)}
+              onChange={(e) => {
+                playSound(plinkSound.current);
+                setPlayer2Name(e.target.value);
+              }}
             />
           </label>
           <label>
@@ -283,7 +320,10 @@ function MainComponent() {
             <input
               type="number"
               value={playerTimeInput}
-              onChange={(e) => setPlayerTimeInput(Number(e.target.value))}
+              onChange={(e) => {
+                playSound(plinkSound.current);
+                setPlayerTimeInput(Number(e.target.value));
+              }}
             />
           </label>
           <label>
@@ -291,7 +331,10 @@ function MainComponent() {
             <input
               type="number"
               value={upkeepTime}
-              onChange={(e) => setUpkeepTime(Number(e.target.value))}
+              onChange={(e) => {
+                playSound(plinkSound.current);
+                setUpkeepTime(Number(e.target.value));
+              }}
             />
           </label>
           <label>
