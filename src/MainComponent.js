@@ -199,7 +199,9 @@ function MainComponent() {
     setShowSettings(false);
     setIsPaused(false);
     setSavedUpkeepTime(upkeepTime);
-    setSavedPlayerTime(player1Time); // Do not reset time on save
+    setSavedPlayerTime(playerTimeInput * 60);
+    setPlayer1Time(playerTimeInput * 60);
+    setPlayer2Time(playerTimeInput * 60);
     handleEasterEgg();
   };
 
@@ -244,6 +246,8 @@ function MainComponent() {
     localStorage.removeItem("savedTimestamp");
     localStorage.removeItem("savedPlayer1Time");
     localStorage.removeItem("savedPlayer2Time");
+    localStorage.removeItem("savedPlayerTime");
+    localStorage.removeItem("savedUpkeepTime");
   };
 
   const openSettings = () => {
