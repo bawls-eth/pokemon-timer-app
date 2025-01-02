@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"; 
+import React, { useState, useEffect, useRef, useCallback } from "react";  
 import "./MainComponent.css";
 
 function MainComponent() {
@@ -166,7 +166,7 @@ function MainComponent() {
     setShowSettings(false);
     setIsPaused(false);
     setSavedUpkeepTime(upkeepTime);
-    setSavedPlayerTime(savedPlayerTime); // Do not reset time on save
+    setSavedPlayerTime(player1Time); // Do not reset time on save
     handleEasterEgg();
   };
 

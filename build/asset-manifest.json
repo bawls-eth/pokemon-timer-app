@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/pokemon-timer-app/static/css/main.6d8b2a06.css",
-    "main.js": "/pokemon-timer-app/static/js/main.03958e2b.js",
+    "main.js": "/pokemon-timer-app/static/js/main.e9596f7b.js",
     "index.html": "/pokemon-timer-app/index.html",
     "main.6d8b2a06.css.map": "/pokemon-timer-app/static/css/main.6d8b2a06.css.map",
-    "main.03958e2b.js.map": "/pokemon-timer-app/static/js/main.03958e2b.js.map"
+    "main.e9596f7b.js.map": "/pokemon-timer-app/static/js/main.e9596f7b.js.map"
   },
   "entrypoints": [
     "static/css/main.6d8b2a06.css",
-    "static/js/main.03958e2b.js"
+    "static/js/main.e9596f7b.js"
   ]
 }
