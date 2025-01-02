@@ -241,6 +241,9 @@ function MainComponent() {
     setPlayer2Time(savedPlayerTime);
     setUpkeepTime(savedUpkeepTime);
     setIsUpkeepActive(false);
+    localStorage.removeItem("savedTimestamp");
+    localStorage.removeItem("savedPlayer1Time");
+    localStorage.removeItem("savedPlayer2Time");
   };
 
   const openSettings = () => {
