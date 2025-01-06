@@ -89,11 +89,21 @@ function MainComponent() {
             return prevTime;
           });
         }
+        if (isUpkeepActive) {
+          setUpkeepTime((prevTime) => {
+            if (prevTime > 0) {
+              return prevTime - 1;
+            } else {
+              setIsUpkeepActive(false);
+              return savedUpkeepTime;
+            }
+          });
+        }
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [gameStarted, isPaused, activePlayer, playSound]);
+  }, [gameStarted, isPaused, activePlayer, isUpkeepActive, playSound, savedUpkeepTime]);
 
   useEffect(() => {
     const savedTimestamp = localStorage.getItem("savedTimestamp");
@@ -193,8 +203,7 @@ function MainComponent() {
     setIsPaused(false);
     setSavedUpkeepTime(upkeepTime);
     setSavedPlayerTime(playerTimeInput * 60);
-    setPlayer1Time(playerTimeInput * 60);
-    setPlayer2Time(playerTimeInput * 60);
+    setPlayerTimeInput(savedPlayerTime / 60); // Keep timers running by avoiding reset
     handleEasterEgg();
   };
 
