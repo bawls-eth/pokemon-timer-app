@@ -72,9 +72,6 @@ function MainComponent() {
     let interval;
     if (gameStarted && !isPaused) {
       interval = setInterval(() => {
-        const now = Date.now();
-        const elapsed = Math.floor((now - Number(localStorage.getItem("savedTimestamp"))) / 1000);
-
         if (activePlayer === 1) {
           setPlayer1Time((prevTime) => {
             if (prevTime > 0) {
@@ -83,7 +80,6 @@ function MainComponent() {
             }
             return prevTime;
           });
-          setPlayer1Time(Math.max(0, savedPlayerTime - elapsed));
         } else if (activePlayer === 2) {
           setPlayer2Time((prevTime) => {
             if (prevTime > 0) {
@@ -92,33 +88,12 @@ function MainComponent() {
             }
             return prevTime;
           });
-          setPlayer2Time(Math.max(0, savedPlayerTime - elapsed));
         }
       }, 1000);
-
-      localStorage.setItem("savedTimestamp", Date.now());
     }
 
     return () => clearInterval(interval);
-  }, [gameStarted, isPaused, activePlayer, savedPlayerTime]);
-
-  useEffect(() => {
-    let interval;
-    if (isUpkeepActive && !isPaused) {
-      interval = setInterval(() => {
-        setUpkeepTime((prevTime) => {
-          if (prevTime > 0) {
-            if (prevTime === 10) playSound(lowHealthSound.current);
-            return prevTime - 1;
-          }
-          setIsUpkeepActive(false);
-          return savedUpkeepTime;
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [isUpkeepActive, isPaused, savedUpkeepTime, playSound]);
+  }, [gameStarted, isPaused, activePlayer, playSound]);
 
   useEffect(() => {
     const savedTimestamp = localStorage.getItem("savedTimestamp");
@@ -128,9 +103,9 @@ function MainComponent() {
     if (savedTimestamp && (savedTime1 || savedTime2)) {
       const elapsedTime = Math.floor((Date.now() - Number(savedTimestamp)) / 1000);
       if (activePlayer === 1) {
-        setPlayer1Time(Math.max(0, Number(savedTime1) - elapsedTime));
+        setPlayer1Time((prevTime) => Math.max(0, prevTime - elapsedTime));
       } else if (activePlayer === 2) {
-        setPlayer2Time(Math.max(0, Number(savedTime2) - elapsedTime));
+        setPlayer2Time((prevTime) => Math.max(0, prevTime - elapsedTime));
       }
     }
   }, [activePlayer]);
