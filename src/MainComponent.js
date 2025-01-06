@@ -72,6 +72,9 @@ function MainComponent() {
     let interval;
     if (gameStarted && !isPaused) {
       interval = setInterval(() => {
+        const now = Date.now();
+        const elapsed = Math.floor((now - Number(localStorage.getItem("savedTimestamp"))) / 1000);
+
         if (activePlayer === 1) {
           setPlayer1Time((prevTime) => {
             if (prevTime > 0) {
@@ -80,6 +83,7 @@ function MainComponent() {
             }
             return prevTime;
           });
+          setPlayer1Time(Math.max(0, savedPlayerTime - elapsed));
         } else if (activePlayer === 2) {
           setPlayer2Time((prevTime) => {
             if (prevTime > 0) {
@@ -88,12 +92,15 @@ function MainComponent() {
             }
             return prevTime;
           });
+          setPlayer2Time(Math.max(0, savedPlayerTime - elapsed));
         }
       }, 1000);
+
+      localStorage.setItem("savedTimestamp", Date.now());
     }
 
     return () => clearInterval(interval);
-  }, [gameStarted, isPaused, activePlayer, playSound]);
+  }, [gameStarted, isPaused, activePlayer, savedPlayerTime]);
 
   useEffect(() => {
     let interval;
@@ -258,7 +265,6 @@ function MainComponent() {
     localStorage.removeItem("savedPlayer1Time");
     localStorage.removeItem("savedPlayer2Time");
     localStorage.removeItem("savedPlayerTime");
-    localStorage.removeItem("savedUpkeepTime");
     localStorage.removeItem("activePlayer");
   };
 
